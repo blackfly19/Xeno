@@ -42,7 +42,7 @@ def validateEmail(Email):
 
 @socketio.on('users')
 def existingUser(check):
-    data = User.query.filter(User.hashID != redis_client.get(request.sid)).all()
+    data = User.query.filter(User.hashID != redis_client.get(request.sid).decode('utf-8')).all()
     users = UserSchema(many=True)
     details = users.dump(data)
     details_json = {"users":details}
