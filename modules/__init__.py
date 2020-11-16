@@ -12,8 +12,10 @@ socketio = SocketIO()
 db = SQLAlchemy()
 mail = Mail()
 ma = Marshmallow()
-redis_client = redis.Redis("localhost",db=0)
-pika_client = pika.BlockingConnection(pika.ConnectionParameters(host='localhost',heartbeat=5))
+REDIS_URL = os.environ.get('REDIS_URL')
+MQ_URL = os.environ.get('CLOUDAMQP_URL')
+redis_client = redis.Redis(REDIS_URL,db=0)
+pika_client = pika.BlockingConnection(pika.ConnectionParameters(host=MQ_URL,heartbeat=5))
 
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
