@@ -19,7 +19,7 @@ def disconnect():
 
 @socketio.on('mapHashID')
 def mapHashID(Hash):
-    pika_client = pika.BlockingConnection(pika.ConnectionParameters(host=MQ_URL,heartbeat=5))
+    pika_client = pika.BlockingConnection(pika.URLParameters(host=MQ_URL))
     channel = pika_client.channel()
 
     if redis_client.exists(Hash):
