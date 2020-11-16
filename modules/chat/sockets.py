@@ -1,4 +1,4 @@
-from modules import socketio,pika_client
+from modules import socketio,MQ_URL
 from .utils import hash_func
 from flask_socketio import emit
 from modules import redis_client 
@@ -14,7 +14,7 @@ def handleMessage(message):
     print(redis_client.get(msg['friendHashID']))
     receiver=redis_client.get(msg['friendHashID'])
     if receiver is None:
-        pika_client = pika.BlockingConnection(pika.ConnectionParameters(host='localhost',heartbeat=5))
+        pika_client = pika.BlockingConnection(pika.ConnectionParameters(host=MQ_URL,heartbeat=5))
         channel = pika_client.channel()
         queue_val = hash_func(msg['friendHashID'])
         #channel.queue_declare(queue=str(queue_val))

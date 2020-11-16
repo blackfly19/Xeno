@@ -2,7 +2,7 @@ from flask import request
 import json
 import pika
 from flask_socketio import emit
-from modules import socketio,redis_client,pika_client
+from modules import socketio,redis_client,MQ_URL
 from .utils import hash_func
 
 @socketio.on('connect')
@@ -19,7 +19,7 @@ def disconnect():
 
 @socketio.on('mapHashID')
 def mapHashID(Hash):
-    pika_client = pika.BlockingConnection(pika.ConnectionParameters(host='localhost',heartbeat=5))
+    pika_client = pika.BlockingConnection(pika.ConnectionParameters(host=MQ_URL,heartbeat=5))
     channel = pika_client.channel()
 
     if redis_client.exists(Hash):
