@@ -14,7 +14,7 @@ def handleMessage(message):
     print(redis_client.get(msg['friendHashID']))
     receiver=redis_client.get(msg['friendHashID'])
     if receiver is None:
-        pika_client = pika.BlockingConnection(pika.URLParameters(host=MQ_URL))
+        pika_client = pika.BlockingConnection(pika.URLParameters(MQ_URL))
         channel = pika_client.channel()
         queue_val = hash_func(msg['friendHashID'])
         #channel.queue_declare(queue=str(queue_val))
