@@ -34,3 +34,7 @@ def xenoMessage(message):
     receiver = receiver.decode('utf-8')
     emit('xenoMessage',message,room=receiver)
     emit('xenoReceipt',msg['id'],room=request.sid)
+
+@socketio.on('unsent')
+def unsent(messages):
+    print(messages)
