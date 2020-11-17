@@ -1,7 +1,8 @@
 import json
 import random as rd
 from flask import request
-from modules import db,mail,socketio,redis_client
+from .utils import hash_func
+from modules import db,mail,socketio,redis_client,MQ_URL
 from modules.models import User,UserSchema
 from flask_mail import Message
 from flask_socketio import emit
