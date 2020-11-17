@@ -40,13 +40,13 @@ def unsent(messages):
     msgs = json.loads(messages)
     for msg in msgs:
         json_msg = json.dumps(msg)
-        if redis_client.exists(msg['chatName']):
-            receiver = redis_client.get(msg['chatName']).decode('utf-8')
+        if redis_client.exists(msg['friendHashID']):
+            receiver = redis_client.get(msg['friendHashID']).decode('utf-8')
             emit('message',json_msg,room=receiver)
         else:
             pika_client = pika.BlockingConnection(pika.URLParameters(MQ_URL))
             channel = pika_client.channel()
-            queue_val = hash_func(msg['chatName'])
+            queue_val = hash_func(msg['friendHashID'])
             #channel.queue_declare(queue=str(queue_val))
             channel.basic_publish(exchange='',routing_key=str(queue_val),body=json_msg)
             channel.close()
