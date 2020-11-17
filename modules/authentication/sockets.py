@@ -26,7 +26,7 @@ def newUser(new_data):
     redis_client.set(data['hashID'],request.sid)
     pika_client = pika.BlockingConnection(pika.URLParameters(MQ_URL))
     channel = pika_client.channel()
-    queue_val = hash_func(Hash)
+    queue_val = hash_func(data['hashID'])
     val = channel.queue_declare(queue=str(queue_val))
     channel.close()
     db.session.commit()
