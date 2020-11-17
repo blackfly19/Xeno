@@ -5,6 +5,7 @@ from modules import db,mail,socketio,redis_client
 from modules.models import User,UserSchema
 from flask_mail import Message
 from flask_socketio import emit
+import pika
 
 @socketio.on('newUser')
 def newUser(new_data):
