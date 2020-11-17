@@ -7,9 +7,7 @@ from modules.config import Config
 import redis
 import pika
 import os
-import eventlet
 
-eventlet.monkey_patch()
 socketio = SocketIO()
 db = SQLAlchemy()
 mail = Mail()

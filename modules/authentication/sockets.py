@@ -16,9 +16,9 @@ def newUser(new_data):
                     email=data['email'],notif_token=data['token'],
                     phone=data['phone'],verified=data['verified'],imageUrl=url)
     db.session.add(new_user)
-    msg = Message('Xeno',sender='xeno@support.com',recipients=[data['email']])
-    msg.body = 'Your account with username ' + data['name'] + ' has been registered'
-    mail.send(msg)
+    #msg = Message('Xeno',sender='xeno@support.com',recipients=[data['email']])
+    #msg.body = 'Your account with username ' + data['name'] + ' has been registered'
+    #mail.send(msg)
     print('Sent')
     redis_client.set(request.sid,data['hashID'])
     redis_client.set(data['hashID'],request.sid)
