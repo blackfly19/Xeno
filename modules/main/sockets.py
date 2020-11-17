@@ -29,7 +29,7 @@ def mapHashID(Hash):
 
     queue_val = hash_func(Hash)
     all_msgs = []
-    val = channel.queue_declare(queue=str(queue_val))
+    #val = channel.queue_declare(queue=str(queue_val))
     num_msgs = val.method.message_count
     if num_msgs != 0:
         for method_frame,_,body in channel.consume(str(queue_val)):

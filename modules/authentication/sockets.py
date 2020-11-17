@@ -22,6 +22,11 @@ def newUser(new_data):
     print('Sent')
     redis_client.set(request.sid,data['hashID'])
     redis_client.set(data['hashID'],request.sid)
+    pika_client = pika.BlockingConnection(pika.URLParameters(MQ_URL))
+    channel = pika_client.channel()
+    queue_val = hash_func(Hash)
+    val = channel.queue_declare(queue=str(queue_val))
+    channel.close()
     db.session.commit()
 
 @socketio.on('validatePhone')
