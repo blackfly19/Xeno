@@ -19,13 +19,13 @@ def match(Hash):
             redis_client.decr('match_queue_count')
             
         if redis_client.lpop('matchqueue') is None:
-            redis_client.lpush('matchqueue',hash_user1)
+            redis_client.rpush('matchqueue',hash_user1)
             break
 
         hash_user2 = redis_client.lpop('matchqueue')
         while redis_client.exists(hash_user2) != True or redis_client.hexists('cancel',hash_user2) == True:
             if redis_client.lpop('matchqueue') is None:
-                redis_client.lpush('matchqueue',hash_user1)
+                redis_client.rpush('matchqueue',hash_user1)
                 break
             if redis_client.hexists('cancel',hash_user2) == True:
                 redis_client.hdel('cancel',hash_user2)
