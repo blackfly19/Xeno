@@ -43,4 +43,4 @@ def match(Hash):
 
 @socketio.on('matchCancel')
 def cancel(Hash):
-    redis_client.hset('cancel',Hash,True)
+    redis_client.hset('cancel',Hash,1)
