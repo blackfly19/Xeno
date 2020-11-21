@@ -7,10 +7,11 @@ import time
 @socketio.on('matchQueue')
 def match(Hash):
 
-    time.sleep(3)
-
     redis_client.rpush('matchqueue',Hash)
     redis_client.incr('match_queue_count')
+
+    time.sleep(3)
+
     while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
         hash_user1 = redis_client.lpop('matchqueue')
