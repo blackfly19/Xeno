@@ -18,10 +18,10 @@ def match(Hash):
         while redis_client.exists(hash_user1) != True or redis_client.hexists('cancel',hash_user1) == True:
             if redis_client.hexists('cancel',hash_user1) == True:
                 redis_client.hdel('cancel',hash_user1)
-            redis_client.decr('match_queue_count')
             if redis_client.exists('matchqueue') == False:
                 break
             hash_user1 = redis_client.lpop('matchqueue')
+            redis_client.decr('match_queue_count')
         redis_client.decr('match_queue_count')
             
         if redis_client.exists('matchqueue') == False:
