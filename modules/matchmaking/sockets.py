@@ -27,6 +27,7 @@ def match(Hash):
         if redis_client.exists('matchqueue') == False:
             print('Is None')
             redis_client.rpush('matchqueue',hash_user1)
+            redis_client.incr('match_queue_count')
             break
 
         hash_user2 = redis_client.lpop('matchqueue')
