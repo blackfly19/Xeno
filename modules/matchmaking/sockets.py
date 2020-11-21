@@ -22,6 +22,7 @@ def match(Hash):
             if redis_client.exists('matchqueue') == False:
                 break
             hash_user1 = redis_client.lpop('matchqueue')
+        redis_client.decr('match_queue_count')
             
         if redis_client.exists('matchqueue') == False:
             print('Is None')
@@ -37,6 +38,7 @@ def match(Hash):
                 redis_client.rpush('matchqueue',hash_user1)
                 break
             hash_user2 = redis_client.lpop('matchqueue')
+        redis_client.decr('match_queue_count')
         
         print(hash_user1)
         print(hash_user2)
@@ -44,7 +46,7 @@ def match(Hash):
         hash_user1 = hash_user1.decode('utf-8')
         hash_user2 = hash_user2.decode('utf-8')
 
-        redis_client.decrby('match_queue_count',2)
+        #redis_client.decrby('match_queue_count',2)
 
         user1 = User.query.filter_by(hashID=hash_user1).first()
         user2 = User.query.filter_by(hashID=hash_user2).first()
