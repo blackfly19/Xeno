@@ -17,7 +17,7 @@ def broadcast(message):
         json_msg = json.dumps(msg)
         jsons.append(json_msg)
 
-    for i,user in enum(users):
+    for i,user in enumerate(users):
         receiver=redis_client.get(user.hashID)
         if receiver is None:
             pika_client = pika.BlockingConnection(pika.URLParameters(MQ_URL))
