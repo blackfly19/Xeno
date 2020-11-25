@@ -1,7 +1,7 @@
 from flask_socketio import emit
 from modules import socketio,MQ_URL,redis_client
 import pika
-from . import hash_func
+from .utils import hash_func
 from modules.models import User
 import json
 import time
