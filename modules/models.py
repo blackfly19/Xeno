@@ -15,5 +15,3 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     class Meta:
         fields = ['username','hashID','imageUrl']
-
-
