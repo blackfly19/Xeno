@@ -12,10 +12,11 @@ def broadcast(message):
     users = User.query.all()
     jsons = []
     for user in users:
-        msg = {'id':int(time.time() * 1000),"userHashID":"00000000000000000000000000000000",
+        if user.hashID != "00000000000000000000000000000000":
+            msg = {'id':int(time.time() * 1000),"userHashID":"00000000000000000000000000000000",
                 "friendHashID":user.hashID,"content":message}
-        json_msg = json.dumps(msg)
-        jsons.append(json_msg)
+            json_msg = json.dumps(msg)
+            jsons.append(json_msg)
 
     for i,user in enumerate(users):
         receiver=redis_client.get(user.hashID)
