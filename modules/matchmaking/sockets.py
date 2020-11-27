@@ -67,3 +67,19 @@ def match(Hash):
 @socketio.on('matchCancel')
 def cancel(Hash):
     redis_client.hset('cancel',Hash,1)
+
+@socketio.on('addOwnFirst')
+def firstTimer(timer_data):
+    print('First timer')
+    data = json.loads(timer_data)
+    receiver = redis_client.get(data['friendHashID'])
+    receiver = receiver.decode('utf-8')
+    emit('addOwnFirst',timer_data,room=receiver)
+
+@socketio.on('addOwnSecond')
+def firstTimer(timer_data):
+    print('Second timer')
+    data = json.loads(timer_data)
+    receiver = redis_client.get(data['friendHashID'])
+    receiver = receiver.decode('utf-8')
+    emit('addOwnSecond',timer_data,room=receiver)
