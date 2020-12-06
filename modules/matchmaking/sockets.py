@@ -83,3 +83,24 @@ def firstTimer(timer_data):
     receiver = redis_client.get(data['friendHashID'])
     receiver = receiver.decode('utf-8')
     emit('addOwnSecond',timer_data,room=receiver)
+
+@socketio.on('revealConsent')
+def consent(data):
+    json_data = json.loads(data)
+    Hash = json_data['friendHashID']
+    receiver = redis_client.get(Hash)
+    emit('revealConsent',data,room=receiver)
+
+@socketio.on('revealFinal')
+def final(data):
+    json_data = json.loads(data)
+    user_receiver = redis_client.get(json_data['userHashID'])
+    friend_receiver = redis_client.get(json_data['friendHashID'])
+    if json_data['ownConsent'] == True and json_data['xenoConsent'] == True:
+        emit('revealFinal',True,room=user_receiver)
+        emit('revealFinal',True,room=friend_receiver)
+    else:
+        emit('revealFinal',False,room=user_receiver)
+        emit('revealFinal',False,room=friend_receiver)
+
+
