@@ -10,6 +10,9 @@ def match(Hash):
     redis_client.rpush('matchqueue',Hash)
     redis_client.incr('match_queue_count')
 
+    if redis_client.get('match_queue_count').decode('utf-8') == 1:
+        redis_client.expire('matchqueue',15)
+
     while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
         redis_client.persist('matchqueue')
