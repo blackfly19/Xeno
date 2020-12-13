@@ -13,9 +13,7 @@ def match(Hash):
     while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
         hash_user1 = redis_client.lpop('matchqueue')
-        while redis_client.exists(hash_user1) != True or redis_client.hexists('cancel',hash_user1) == True:
-            if redis_client.hexists('cancel',hash_user1) == True:
-                redis_client.hdel('cancel',hash_user1)
+        while redis_client.exists(hash_user1) != True:
             if redis_client.exists('matchqueue') == False:
                 break
             hash_user1 = redis_client.lpop('matchqueue')
@@ -29,9 +27,7 @@ def match(Hash):
             break
 
         hash_user2 = redis_client.lpop('matchqueue')
-        while redis_client.exists(hash_user2) != True or redis_client.hexists('cancel',hash_user2) == True:
-            if redis_client.hexists('cancel',hash_user2) == True:
-                redis_client.hdel('cancel',hash_user2)
+        while redis_client.exists(hash_user2) != True:
             if redis_client.exists('matchqueue') == False:
                 redis_client.rpush('matchqueue',hash_user1)
                 redis_client.incr('match_queue_count')
