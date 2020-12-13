@@ -12,6 +12,8 @@ def match(Hash):
 
     while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
+        redis_client.persist('matchqueue')
+
         hash_user1 = redis_client.lpop('matchqueue')
         while redis_client.exists(hash_user1) != True:
             if redis_client.exists('matchqueue') == False:
@@ -24,6 +26,7 @@ def match(Hash):
             print('Is None')
             redis_client.rpush('matchqueue',hash_user1)
             redis_client.incr('match_queue_count')
+            redis_client.expire('matchqueue',15)
             break
 
         hash_user2 = redis_client.lpop('matchqueue')
@@ -31,6 +34,7 @@ def match(Hash):
             if redis_client.exists('matchqueue') == False:
                 redis_client.rpush('matchqueue',hash_user1)
                 redis_client.incr('match_queue_count')
+                redis_client.expire('matchqueue',15)
                 hash_user2 = None
                 break
             hash_user2 = redis_client.lpop('matchqueue')
@@ -57,6 +61,12 @@ def match(Hash):
         #json - dp url,name, hashid,interest list
         emit('xenoHashID',user1_json,room=redis_client.get(hash_user2).decode('utf-8'))
         emit('xenoHashID',user2_json,room=redis_client.get(hash_user1).decode('utf-8'))
+
+    while redis_client.ttl('matchqueue') != -1 or redis_client.ttl('matchqueue') != -2:
+        continue
+
+    if redis_client.ttl('matchqueue') == -2:
+        emit('matchCancel',1)
 
 @socketio.on('matchCancel')
 def cancel(Hash):
