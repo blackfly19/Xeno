@@ -13,6 +13,12 @@ def match(Hash):
     if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
         redis_client.expire('matchqueue',15)
 
+    while redis_client.ttl('matchqueue') != -1 or redis_client.ttl('matchqueue') != -2:
+        continue
+
+    if redis_client.ttl('matchqueue') == -2:
+        emit('matchCancel',1)
+
     while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
         redis_client.persist('matchqueue')
