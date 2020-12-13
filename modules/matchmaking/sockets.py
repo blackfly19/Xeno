@@ -71,7 +71,7 @@ def match(Hash):
         emit('xenoHashID',user1_json,room=redis_client.get(hash_user2).decode('utf-8'))
         emit('xenoHashID',user2_json,room=redis_client.get(hash_user1).decode('utf-8'))
 
-    while redis_client.ttl('matchqueue') != -1 or redis_client.ttl('matchqueue') != -2:
+    while redis_client.ttl('matchqueue') != -1 and redis_client.ttl('matchqueue') != -2:
         continue
 
     if redis_client.ttl('matchqueue') == -2:
