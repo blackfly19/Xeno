@@ -1,4 +1,4 @@
-from modules import redis_client
+from modules import redis_client,REDIS_URL
 from flask_socketio import emit
 from celery import Celery 
 
