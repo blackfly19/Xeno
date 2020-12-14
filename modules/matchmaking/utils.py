@@ -1,5 +1,9 @@
-from modules import async_task,redis_client
+from modules import redis_client
 from flask_socketio import emit
+from celery import Celery 
+
+async_task = Celery('tasks',broker=REDIS_URL)
+
 
 @async_task.task()
 def Wait():

@@ -16,7 +16,6 @@ ma = Marshmallow()
 REDIS_URL = os.environ.get('REDIS_URL')
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
 redis_client = redis.from_url(REDIS_URL)
-async_task = Celery('tasks',broker=REDIS_URL)
 
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
