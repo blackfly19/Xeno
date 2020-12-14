@@ -1,2 +1,2 @@
 web: gunicorn -k eventlet -w 1 run:app
-worker: celery worker --app=modules.matchmaking.utils.async_task --loglevel=info
+worker: celery -A modules.matchmaking.utils.async_task worker --loglevel=info
