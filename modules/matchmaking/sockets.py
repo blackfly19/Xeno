@@ -1,6 +1,7 @@
 from modules import socketio,redis_client
 from modules.models import User
 from flask_socketio import emit
+from .utils import Wait
 import json
 import time
 
@@ -10,14 +11,9 @@ def match(Hash):
     redis_client.rpush('matchqueue',Hash)
     redis_client.incr('match_queue_count')
 
-    """if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
+    if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
         redis_client.expire('matchqueue',15)
-
-    while redis_client.ttl('matchqueue') != -1 and redis_client.ttl('matchqueue') != -2:
-        continue
-
-    if redis_client.ttl('matchqueue') == -2:
-        emit('matchCancel',1)"""
+        Wait.delay()
 
     while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
@@ -70,12 +66,6 @@ def match(Hash):
         #json - dp url,name, hashid,interest list
         emit('xenoHashID',user1_json,room=redis_client.get(hash_user2).decode('utf-8'))
         emit('xenoHashID',user2_json,room=redis_client.get(hash_user1).decode('utf-8'))
-
-    """while redis_client.ttl('matchqueue') != -1 and redis_client.ttl('matchqueue') != -2:
-        continue
-
-    if redis_client.ttl('matchqueue') == -2:
-        emit('matchCancel',1)"""
 
 @socketio.on('matchCancel')
 def cancel(Hash):
