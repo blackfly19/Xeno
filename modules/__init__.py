@@ -28,7 +28,7 @@ def create_app(debug=False,config_class=Config):
         #db.session.commit()
     mail.init_app(app)
     ma.init_app(app)
-    socketio.init_app(app,cors_allowed_origins="*")
+    socketio.init_app(app,cors_allowed_origins="*",message_queue=REDIS_URL)
     redis_client.set('match_queue_count',0)
 
     from modules.main import main
