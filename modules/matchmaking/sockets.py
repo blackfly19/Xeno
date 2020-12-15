@@ -13,7 +13,7 @@ def match(Hash):
 
     if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
         redis_client.expire('matchqueue',15)
-        Wait.delay()
+        Wait.delay(Hash)
 
     while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
