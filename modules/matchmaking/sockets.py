@@ -18,6 +18,7 @@ def match(Hash):
     while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
         redis_client.persist('matchqueue')
+        time.sleep(1)
 
         hash_user1 = redis_client.lpop('matchqueue')
         while redis_client.exists(hash_user1) != True:
