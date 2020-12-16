@@ -46,3 +46,12 @@ def validateEmail(Email):
         emit('validateEmail',True)
     else:
         emit('validateEmail',False)
+
+@socketio.on('users')
+def existingUser(check):	
+    data = User.query.filter(User.hashID != redis_client.get(request.sid).decode('utf-8')).all()	
+    users = UserSchema(many=True)	
+    details = users.dump(data)	
+    details_json = {"users":details}	
+    details_json = json.dumps(details_json)	
+    emit('users',details_json)
