@@ -15,7 +15,9 @@ mail = Mail()
 ma = Marshmallow()
 REDIS_URL = os.environ.get('REDIS_URL')
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
-redis_client = redis.Redis(host=REDIS_URL,password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',ssl=True)
+redis_client = redis.StrictRedis(host='xeno.redis.cache.windows.net',password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',port=6380,ssl=True)
+
+#redis_client = redis.Redis(host=REDIS_URL,password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',ssl=True)
 #redis_client = redis.from_url(REDIS_URL)
 
 def create_app(debug=False,config_class=Config):
