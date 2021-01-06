@@ -32,7 +32,8 @@ def match(Hash):
             print('Is None')
             redis_client.rpush('matchqueue',hash_user1)
             redis_client.incr('match_queue_count')
-            redis_client.expire('matchqueue',15)
+            redis_client.expire('matchqueue',20)
+            Wait.delay(Hash)
             break
 
         hash_user2 = redis_client.lpop('matchqueue')
@@ -40,7 +41,8 @@ def match(Hash):
             if redis_client.exists('matchqueue') == False:
                 redis_client.rpush('matchqueue',hash_user1)
                 redis_client.incr('match_queue_count')
-                redis_client.expire('matchqueue',15)
+                redis_client.expire('matchqueue',20)
+                Wait.delay(Hash)
                 hash_user2 = None
                 break
             hash_user2 = redis_client.lpop('matchqueue')
