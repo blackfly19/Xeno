@@ -67,6 +67,8 @@ def match(Hash):
         #json - dp url,name, hashid,interest list
         emit('xenoHashID',user1_json,room=redis_client.get(hash_user2).decode('utf-8'))
         emit('xenoHashID',user2_json,room=redis_client.get(hash_user1).decode('utf-8'))
+        
+        print('values emitted')
 
 @socketio.on('matchCancel')
 def cancel(Hash):
