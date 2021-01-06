@@ -3,7 +3,7 @@ from flask_socketio import SocketIO
 from celery import Celery 
 from flask import request
 
-async_task = Celery('tasks',broker=)
+async_task = Celery('tasks',broker=REDIS_URL)
 socket = SocketIO(message_queue=REDIS_URL)
 
 @async_task.task()
