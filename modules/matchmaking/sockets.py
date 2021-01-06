@@ -77,7 +77,7 @@ def match(Hash):
     redis_client.rpush('matchqueue',Hash)
     redis_client.incr('match_queue_count')
 
-    matcher1()
+    await matcher1()
 
     
 @socketio.on('matchCancel')
