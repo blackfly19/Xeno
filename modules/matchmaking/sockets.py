@@ -7,6 +7,11 @@ import time
 
 def matcher():
     print('gap')
+
+    if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
+        redis_client.expire('matchqueue',20)
+        Wait.delay(Hash)
+
     while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
         redis_client.persist('matchqueue')
@@ -62,6 +67,9 @@ def matcher():
         
         print('values emitted')
 
+def matcher1():
+    time.sleep(5)
+    print('val')
 
 @socketio.on('matchQueue')
 def match(Hash):
@@ -69,11 +77,7 @@ def match(Hash):
     redis_client.rpush('matchqueue',Hash)
     redis_client.incr('match_queue_count')
 
-    if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
-        redis_client.expire('matchqueue',20)
-        Wait.delay(Hash)
-
-    matcher()
+    matcher1()
 
     
 @socketio.on('matchCancel')
