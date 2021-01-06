@@ -5,16 +5,8 @@ from .utils import Wait
 import json
 import time
 
-@socketio.on('matchQueue')
-def match(Hash):
-
-    redis_client.rpush('matchqueue',Hash)
-    redis_client.incr('match_queue_count')
-
-    if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
-        redis_client.expire('matchqueue',20)
-        Wait.delay(Hash)
-
+def matcher():
+    print('gap')
     while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
         redis_client.persist('matchqueue')
@@ -72,6 +64,20 @@ def match(Hash):
         
         print('values emitted')
 
+
+@socketio.on('matchQueue')
+def match(Hash):
+
+    redis_client.rpush('matchqueue',Hash)
+    redis_client.incr('match_queue_count')
+
+    if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
+        redis_client.expire('matchqueue',20)
+        Wait.delay(Hash)
+
+    matcher()
+
+    
 @socketio.on('matchCancel')
 def cancel(Hash):
     redis_client.hset('cancel',Hash,1)
