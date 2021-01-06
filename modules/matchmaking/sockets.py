@@ -41,7 +41,7 @@ def match(Hash):
                 redis_client.rpush('matchqueue',hash_user1)
                 redis_client.incr('match_queue_count')
                 redis_client.expire('matchqueue',20)
-                Wait.delay(Hash)
+                Wait.delay(hash_user1)
                 hash_user2 = None
                 break
             hash_user2 = redis_client.lpop('matchqueue')
