@@ -13,7 +13,7 @@ socketio = SocketIO()
 db = SQLAlchemy()
 mail = Mail()
 ma = Marshmallow()
-REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = 'xeno.redis.cache.windows.net'
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
 redis_client = redis.StrictRedis(host='xeno.redis.cache.windows.net',password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',port=6379)
 
