@@ -15,7 +15,7 @@ def Wait(Hash):
 
     if redis_client.ttl('matchqueue') == -2:
         redis_client.decr('match_queue_count')
-        socket.emit('matchCancel',Hash)
+        socket.emit('matchCancel',Hash,room=redis_client.get(Hash))
 
 @async_task.task()
 def tryCheck():
