@@ -17,6 +17,6 @@ def Wait(Hash):
         socket.emit('matchCancel',Hash)
 
 @async_task.task()
-def try():
+def tryCheck():
     time.sleep(5)
     print("Celery value")

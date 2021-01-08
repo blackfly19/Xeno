@@ -1,7 +1,7 @@
 from modules import socketio,redis_client
 from modules.models import User
 from flask_socketio import emit
-from .utils import Wait
+from .utils import Wait,tryCheck
 import json
 import time
 
@@ -73,6 +73,7 @@ def match(Hash):
 
     redis_client.rpush('matchqueue',Hash)
     redis_client.incr('match_queue_count')
+    tryCheck.delay()
 
     
 @socketio.on('matchCancel')
