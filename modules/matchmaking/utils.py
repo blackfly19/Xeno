@@ -1,11 +1,9 @@
 from modules import redis_client,REDIS_URL
 from flask_socketio import SocketIO
-from celery import Celery
+from modules import async_task
 from flask import request,current_app
 import time
 
-
-async_task = Celery(current_app.name,broker=REDIS_URL)
 socket = SocketIO(message_queue=REDIS_URL)
 
 @async_task.task()
