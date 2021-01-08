@@ -5,7 +5,7 @@ from .utils import Wait,tryCheck
 import json
 import time
 
-def matcher():
+def matcher(Hash):
     print('gap')
 
     if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
@@ -74,7 +74,7 @@ def match(Hash):
     redis_client.rpush('matchqueue',Hash)
     redis_client.incr('match_queue_count')
     tryCheck.delay()
-    matcher()
+    matcher(Hash)
 
     
 @socketio.on('matchCancel')
