@@ -24,6 +24,9 @@ REDIS_URL = 'redis://:6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=@xeno.redis.ca
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
 redis_client = redis.StrictRedis(host='xeno.redis.cache.windows.net',password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',port=6379)
 
+th = threading.Thread(target=test)
+th.start()
+
 #redis_client = redis.Redis(host=REDIS_URL,password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',ssl=True)
 #redis_client = redis.from_url(REDIS_URL)
 
@@ -31,9 +34,6 @@ def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
     app.debug = debug
     app.config.from_object(Config)
-
-    th = threading.Thread(target=test)
-    th.start()
 
     db.init_app(app)
     #with app.app_context():
