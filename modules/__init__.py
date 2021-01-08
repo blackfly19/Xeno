@@ -21,7 +21,7 @@ MQ_URL = os.environ.get('CLOUDAMQP_URL')
 
 redis_client = redis.StrictRedis(host='xeno.redis.cache.windows.net',password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',port=6379)
 
-async_task = Celery(current_app,broker=REDIS_URL)
+async_task = Celery(current_app.import_name,broker=REDIS_URL)
 
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
