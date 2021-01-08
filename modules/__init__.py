@@ -1,4 +1,4 @@
-from flask import flask
+from flask import Flask
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
