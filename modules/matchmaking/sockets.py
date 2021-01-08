@@ -67,17 +67,12 @@ def matcher():
         
         print('values emitted')
 
-def matcher1():
-    time.sleep(5)
-    print('val')
 
 @socketio.on('matchQueue')
 def match(Hash):
 
     redis_client.rpush('matchqueue',Hash)
     redis_client.incr('match_queue_count')
-
-    await matcher1()
 
     
 @socketio.on('matchCancel')

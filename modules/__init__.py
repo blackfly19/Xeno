@@ -5,9 +5,14 @@ from flask_mail import Mail
 from flask_marshmallow import Marshmallow
 from modules.config import Config
 from celery import Celery
+import threading
 import redis
 import pika
 import os
+
+def test():
+    time.sleep(5)
+    print("Thread value")
 
 socketio = SocketIO()
 db = SQLAlchemy()
@@ -25,6 +30,9 @@ def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
     app.debug = debug
     app.config.from_object(Config)
+
+    th = threading.Thread(target=test)
+    th.start()
 
     db.init_app(app)
     #with app.app_context():
