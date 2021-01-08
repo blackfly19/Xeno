@@ -11,10 +11,11 @@ def Wait(Hash):
     while redis_client.ttl('matchqueue') != -1 and redis_client.ttl('matchqueue') != -2:
         continue
     print("out of while")
+    print(redis_client.ttl('matchqueue'))
 
     if redis_client.ttl('matchqueue') == -2:
         redis_client.decr('match_queue_count')
-        socket.emit('matchCancel',Hash,room=redis_client.get(Hash))
+        socket.emit('matchCancel',Hash)
 
 @async_task.task()
 def tryCheck():
