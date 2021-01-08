@@ -15,3 +15,8 @@ def Wait(Hash):
     if redis_client.ttl('matchqueue') == -2:
         redis_client.decr('match_queue_count')
         socket.emit('matchCancel',Hash)
+
+@async_task.task()
+def try():
+    time.sleep(5)
+    print("Celery value")
