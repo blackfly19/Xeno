@@ -1,5 +1,6 @@
 from modules import redis_client,REDIS_URL
 from flask_socketio import SocketIO
+from celery import Celery
 from flask import request,current_app
 import time
 
