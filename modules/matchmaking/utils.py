@@ -1,6 +1,5 @@
 from modules import redis_client,REDIS_URL
 from flask_socketio import SocketIO
-from modules import async_task
 from flask import request,current_app
 import time
 
