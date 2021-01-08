@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,current_app
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
@@ -18,10 +18,10 @@ ma = Marshmallow()
 REDIS_URL = 'redis://:6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=@xeno.redis.cache.windows.net:6379/0'
 
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
+
 redis_client = redis.StrictRedis(host='xeno.redis.cache.windows.net',password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',port=6379)
 
-#redis_client = redis.Redis(host=REDIS_URL,password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',ssl=True)
-#redis_client = redis.from_url(REDIS_URL)
+async_task = Celery(current_app,broker=REDIS_URL)
 
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)

@@ -1,10 +1,9 @@
 from modules import redis_client,REDIS_URL
 from flask_socketio import SocketIO
-from celery import Celery 
+from modules import async_task
 from flask import request
 import time
 
-async_task = Celery('tasks',broker=REDIS_URL)
 socket = SocketIO(message_queue=REDIS_URL)
 
 @async_task.task()
@@ -15,9 +14,10 @@ def Wait(Hash):
 
     if redis_client.ttl('matchqueue') == -2:
         redis_client.decr('match_queue_count')
-        socket.emit('matchCancel',Hash)
+        socket.emit('matchCancel',Hash,room=redis_client.get(Hash))
 
 @async_task.task()
 def tryCheck():
-    time.sleep(5)
-    print("Celery value")
+    while 1:
+        time.sleep(5)
+        print("Celery value")
