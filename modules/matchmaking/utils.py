@@ -3,6 +3,7 @@ from flask_socketio import SocketIO
 from modules import async_task
 from flask import request
 import time
+from modules.models import User
 
 socket = SocketIO(message_queue=REDIS_URL)
 
