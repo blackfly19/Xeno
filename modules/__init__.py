@@ -51,6 +51,6 @@ def create_app(debug=False,config_class=Config):
     app.register_blueprint(matchmaking)
     app.register_blueprint(dashboard)
 
-    SeemaTaparia()
+    SeemaTaparia.delay()
 
     return app
