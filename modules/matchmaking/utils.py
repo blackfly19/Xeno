@@ -4,6 +4,7 @@ from modules import async_task
 from flask import request
 import time
 from modules.models import User
+import json
 
 socket = SocketIO(message_queue=REDIS_URL)
 
@@ -79,7 +80,7 @@ def SeemaTaparia():
             user2_json = json.dumps({'name':user2.username,'hashID':hash_user2,'imageUrl':user2.imageUrl})
         
         #json - dp url,name, hashid,interest list
-            emit('xenoHashID',user1_json,room=redis_client.get(hash_user2).decode('utf-8'))
-            emit('xenoHashID',user2_json,room=redis_client.get(hash_user1).decode('utf-8'))
+            socket.emit('xenoHashID',user1_json,room=redis_client.get(hash_user2).decode('utf-8'))
+            socket.emit('xenoHashID',user2_json,room=redis_client.get(hash_user1).decode('utf-8'))
         
             print('values emitted')
