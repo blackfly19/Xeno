@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_marshmallow import Marshmallow
 from modules.config import Config
-from modules.matchmaking.utils import SeemaTaparia
 from celery import Celery
 import threading
 import time
@@ -21,6 +20,8 @@ async_task = Celery(__name__,broker=Config.CELERY_BROKER_URL)
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
 
 redis_client = redis.StrictRedis(host='xeno.redis.cache.windows.net',password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',port=6379)
+
+from modules.matchmaking.utils import SeemaTaparia
 
 
 def create_app(debug=False,config_class=Config):
