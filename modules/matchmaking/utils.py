@@ -1,7 +1,7 @@
 from modules import redis_client,REDIS_URL
 from flask_socketio import SocketIO
-from modules import async_task
-from flask import request,current_app
+from modules import async_task,create_app
+from flask import request
 import time
 from modules.models import User
 import json
@@ -25,6 +25,7 @@ def Wait():
 
 @async_task.task()
 def SeemaTaparia():
+    app = create_app()
     while 1:
 
         if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
@@ -73,7 +74,7 @@ def SeemaTaparia():
 
         #redis_client.decrby('match_queue_count',2)
 
-            with current_app.app_context():
+            with app.app_context():
                 user1 = User.query.filter_by(hashID=hash_user1).first()
                 user2 = User.query.filter_by(hashID=hash_user2).first()
 
