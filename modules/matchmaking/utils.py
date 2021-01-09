@@ -7,7 +7,10 @@ import time
 socket = SocketIO(message_queue=REDIS_URL)
 
 @async_task.task()
-def Wait(Hash):
+def Wait():
+
+    Hash = redis_client.lindex('matchqueue',0)
+    Hash = Hash.decode('utf-8')
     while redis_client.ttl('matchqueue') != -1 and redis_client.ttl('matchqueue') != -2:
         continue
     print("out of while")
@@ -25,7 +28,7 @@ def SeemaTaparia():
         if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
             if redis_client.ttl('matchqueue') == -1 or redis_client.ttl('matchqueue') == -2:
                 redis_client.expire('matchqueue',20)
-                Wait.delay(redis_client.lindex('matchqueue',0))
+                Wait.delay()
 
         while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
