@@ -26,7 +26,7 @@ def SeemaTaparia():
     while 1:
 
         if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
-            if redis_client.ttl('matchqueue') == -1 or redis_client.ttl('matchqueue') == -2:
+            if redis_client.ttl('matchqueue') == -1:
                 redis_client.expire('matchqueue',20)
                 Wait.delay()
 
