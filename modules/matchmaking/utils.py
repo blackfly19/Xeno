@@ -4,6 +4,7 @@ from modules import async_task
 from flask import request
 import time
 from modules.models import User
+from flask import current_app as app
 import json
 
 socket = SocketIO(message_queue=REDIS_URL)
@@ -73,8 +74,9 @@ def SeemaTaparia():
 
         #redis_client.decrby('match_queue_count',2)
 
-            user1 = User.query.filter_by(hashID=hash_user1).first()
-            user2 = User.query.filter_by(hashID=hash_user2).first()
+            with app.app_context():
+                user1 = User.query.filter_by(hashID=hash_user1).first()
+                user2 = User.query.filter_by(hashID=hash_user2).first()
 
             user1_json = json.dumps({'name':user1.username,'hashID':hash_user1,'imageUrl':user1.imageUrl})
             user2_json = json.dumps({'name':user2.username,'hashID':hash_user2,'imageUrl':user2.imageUrl})
