@@ -21,9 +21,6 @@ MQ_URL = os.environ.get('CLOUDAMQP_URL')
 
 redis_client = redis.StrictRedis(host='xeno.redis.cache.windows.net',password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',port=6379)
 
-from modules.matchmaking.utils import SeemaTaparia
-
-
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
     app.debug = debug
@@ -51,6 +48,8 @@ def create_app(debug=False,config_class=Config):
     app.register_blueprint(matchmaking)
     app.register_blueprint(dashboard)
 
-    SeemaTaparia.delay()
-
     return app
+
+from modules.matchmaking.utils import SeemaTaparia
+SeemaTaparia.delay()
+
