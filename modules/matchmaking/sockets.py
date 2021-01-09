@@ -58,5 +58,9 @@ def final(data):
         emit('revealFinal',False,room=user_receiver)
         emit('revealFinal',False,room=friend_receiver)
 
+@socketio.on('syncTime')
+def syncTimers():
+    emit('syncTime',time.time()*1000)
+
 
 
