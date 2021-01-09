@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_marshmallow import Marshmallow
 from modules.config import Config
+from modules.matchmaking.utils import SeemaTaparia
 from celery import Celery
 import threading
 import time
@@ -48,5 +49,7 @@ def create_app(debug=False,config_class=Config):
     app.register_blueprint(chat)
     app.register_blueprint(matchmaking)
     app.register_blueprint(dashboard)
+
+    SeemaTaparia()
 
     return app
