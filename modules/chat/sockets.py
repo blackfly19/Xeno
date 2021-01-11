@@ -29,11 +29,11 @@ def handleMessage(message):
 def xenoMessage(message):
     msg = json.loads(message)
     print(message)
-    print(redis_client.get(msg['friendHashID']))
-    receiver=redis_client.get(msg['friendHashID'])
-    receiver = receiver.decode('utf-8')
+    #print(redis_client.get(msg['friendHashID']))
+    #receiver=redis_client.get(msg['friendHashID'])
+    #receiver = receiver.decode('utf-8')
     emit('xenoReceipt',msg['id'],room=request.sid)
-    emit('xenoMessage',message,room=receiver)
+    #emit('xenoMessage',message,room=receiver)
 
 @socketio.on('unsent')
 def unsent(messages):
