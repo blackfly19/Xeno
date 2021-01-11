@@ -20,6 +20,11 @@ async_task = Celery(__name__,broker=Config.CELERY_BROKER_URL)
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
 
 redis_client = redis.StrictRedis(host='xeno.redis.cache.windows.net',password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',port=6379)
+redis_client.delete('unacked')
+redis_client.delete('unacked_index')
+redis_client.delete('_kombu.binding.celery.pidbox')
+redis_client.delete('_kombu.binding.celery')
+redis_client.delete('_kombu.binding.celeryev')
 
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
