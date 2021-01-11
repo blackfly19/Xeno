@@ -25,6 +25,7 @@ redis_client.delete('unacked_index')
 redis_client.delete('_kombu.binding.celery.pidbox')
 redis_client.delete('_kombu.binding.celery')
 redis_client.delete('_kombu.binding.celeryev')
+redis_client.delete('celery')
 
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
