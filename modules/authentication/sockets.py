@@ -17,9 +17,9 @@ def newUser(new_data):
     new_user = User(hashID = data['hashID'],username=data['name'],
                     email=data['email'],notif_token=data['token'],
                     phone=data['phone'],verified=data['verified'],imageUrl=url,
-                    interest_1=data['intToSend'][0],interest_2=data['intToSend'][1],
-                    interest_3=data['intToSend'][2],interest_4=data['intToSend'][3],
-                    interest_5=data['intToSend'][4])
+                    interest_1=data['interests'][0],interest_2=data['interests'][1],
+                    interest_3=data['interests'][2],interest_4=data['interests'][3],
+                    interest_5=data['interests'][4])
     db.session.add(new_user)
     #msg = Message('Xeno',sender='xeno@support.com',recipients=[data['email']])
     #msg.body = 'Your account with username ' + data['name'] + ' has been registered'
