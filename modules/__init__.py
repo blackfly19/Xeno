@@ -59,6 +59,7 @@ def create_app(debug=False,config_class=Config):
 
     return app
 
-from modules.matchmaking.utils import SeemaTaparia
+from modules.matchmaking.utils import SeemaTaparia,Limiter
 SeemaTaparia.delay()
+Limiter.delay()
 

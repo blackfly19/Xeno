@@ -88,3 +88,7 @@ def SeemaTaparia():
             socket.emit('xenoHashID',user2_json,room=redis_client.get(hash_user1).decode('utf-8'))
         
             print('values emitted')
+
+@async_task.task()
+def Limiter():
+    print("Welcome to Xeno logs")
