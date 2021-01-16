@@ -22,8 +22,6 @@ REDIS_URL = 'redis://:6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=@xeno.redis.ca
 async_task = Celery(__name__,broker=Config.CELERY_BROKER_URL)
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
 
-from modules.matchmaking.utils import SeemaTaparia,Limiter
-
 redis_client = redis.StrictRedis(host='xeno.redis.cache.windows.net',password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',port=6379)
 redis_client.delete('unacked')
 redis_client.delete('unacked_index')
@@ -31,6 +29,8 @@ redis_client.delete('_kombu.binding.celery.pidbox')
 redis_client.delete('_kombu.binding.celery')
 redis_client.delete('_kombu.binding.celeryev')
 redis_client.delete('celery')
+
+from modules.matchmaking.utils import SeemaTaparia,Limiter
 
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
@@ -49,7 +49,6 @@ def create_app(debug=False,config_class=Config):
 
     SeemaTaparia.delay()
     Limiter.delay()
-
 
     from modules.main import main
     from modules.authentication import authentication
