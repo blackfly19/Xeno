@@ -1,6 +1,5 @@
 from modules import create_app
 from celery import Celery
-from modules.matchmaking.utils import SeemaTaparia
 
 def make_celery(app):
     celery = Celery(
@@ -18,4 +17,6 @@ def make_celery(app):
     return celery
 
 async_task = make_celery(create_app())
+
+from modules.matchmaking.utils import SeemaTaparia
 SeemaTaparia.delay()
