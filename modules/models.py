@@ -11,6 +11,11 @@ class User(db.Model):
     phone = db.Column('phone',db.String(10),nullable=False,unique=True)
     notif_token = db.Column('notif_token',db.String(64),nullable=False,unique=True)
     verified = db.Column('verified',db.Boolean,nullable=False)
+    interest_1 = db.Column('interest1',db.String(150),nullable=True)
+    interest_2 = db.Column('interest2',db.String(150),nullable=True)
+    interest_3 = db.Column('interest3',db.String(150),nullable=True)
+    interest_4 = db.Column('interest4',db.String(150),nullable=True)
+    interest_5 = db.Column('interest5',db.String(150),nullable=True)
 
 class UserSchema(ma.Schema):
     class Meta:

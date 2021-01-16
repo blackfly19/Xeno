@@ -78,8 +78,10 @@ def SeemaTaparia():
                 user1 = User.query.filter_by(hashID=hash_user1).first()
                 user2 = User.query.filter_by(hashID=hash_user2).first()
 
-            user1_json = json.dumps({'name':user1.username,'hashID':hash_user1,'imageUrl':user1.imageUrl})
-            user2_json = json.dumps({'name':user2.username,'hashID':hash_user2,'imageUrl':user2.imageUrl})
+            user1_json = json.dumps({'name':user1.username,'hashID':hash_user1,'imageUrl':user1.imageUrl,
+            'interests':[user1.interest_1,user1.interest_2,user1.interest_3,user1.interest_4,user1.interest_5]})
+            user2_json = json.dumps({'name':user2.username,'hashID':hash_user2,'imageUrl':user2.imageUrl,
+            'interests':[user2.interest_1,user2.interest_2,user2.interest_3,user2.interest_4,user2.interest_5]})
         
         #json - dp url,name, hashid,interest list
             socket.emit('xenoHashID',user1_json,room=redis_client.get(hash_user2).decode('utf-8'))
