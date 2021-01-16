@@ -22,6 +22,8 @@ REDIS_URL = 'redis://:6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=@xeno.redis.ca
 async_task = Celery(__name__,broker=Config.CELERY_BROKER_URL)
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
 
+from modules.matchmaking.utils import SeemaTaparia,Limiter
+
 redis_client = redis.StrictRedis(host='xeno.redis.cache.windows.net',password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',port=6379)
 redis_client.delete('unacked')
 redis_client.delete('unacked_index')
@@ -45,6 +47,10 @@ def create_app(debug=False,config_class=Config):
     socketio.init_app(app,cors_allowed_origins="*",message_queue=REDIS_URL)
     redis_client.set('match_queue_count',0)
 
+    SeemaTaparia.delay()
+    Limiter.delay()
+
+
     from modules.main import main
     from modules.authentication import authentication
     from modules.chat import chat
@@ -58,8 +64,3 @@ def create_app(debug=False,config_class=Config):
     app.register_blueprint(dashboard)
 
     return app
-
-from modules.matchmaking.utils import SeemaTaparia,Limiter
-SeemaTaparia.delay()
-Limiter.delay()
-
