@@ -10,4 +10,4 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS')
     MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL')
-    CELERY_BROKER_URL = '104.43.214.159'
+    CELERY_BROKER_URL = 'redis://104.43.214.159'

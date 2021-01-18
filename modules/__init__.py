@@ -18,7 +18,7 @@ socketio = SocketIO()
 db = SQLAlchemy()
 mail = Mail()
 ma = Marshmallow()
-REDIS_URL = '104.43.214.159'
+REDIS_URL = 'redis://104.43.214.159'
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
 
 redis_client = redis.StrictRedis(host='104.43.214.159',port=6379)
