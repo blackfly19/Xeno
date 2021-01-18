@@ -18,17 +18,10 @@ socketio = SocketIO()
 db = SQLAlchemy()
 mail = Mail()
 ma = Marshmallow()
-REDIS_URL = 'redis://:6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=@xeno.redis.cache.windows.net:6379/0'
-#async_task = Celery(__name__,broker=Config.CELERY_BROKER_URL)
+REDIS_URL = '104.43.214.159'
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
 
-redis_client = redis.StrictRedis(host='xeno.redis.cache.windows.net',password='6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=',port=6379)
-#redis_client.delete('unacked')
-#redis_client.delete('unacked_index')
-#redis_client.delete('_kombu.binding.celery.pidbox')
-#redis_client.delete('_kombu.binding.celery')
-#redis_client.delete('_kombu.binding.celeryev')
-#redis_client.delete('celery')
+redis_client = redis.StrictRedis(host='104.43.214.159',port=6379)
 
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
