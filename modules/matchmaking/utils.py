@@ -11,14 +11,14 @@ socket = SocketIO(message_queue=REDIS_URL)
 @async_task.task()
 def Wait():
 
-    Hash = redis_client.lindex('matchqueue',0)
-    Hash = Hash.decode('utf-8')
     while redis_client.ttl('matchqueue') != -1 and redis_client.ttl('matchqueue') != -2:
         continue
     print("out of while")
     print(redis_client.ttl('matchqueue'))
 
     if redis_client.ttl('matchqueue') == -2:
+        Hash = redis_client.lindex('matchqueue',0)
+        Hash = Hash.decode('utf-8')
         redis_client.decr('match_queue_count')
         receiver = redis_client.get(Hash).decode('utf-8')
         socket.emit('matchCancel',Hash,room=receiver)

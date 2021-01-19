@@ -21,6 +21,8 @@ def disconnect():
 @socketio.on('mapHashID')
 def mapHashID(Hash):
 
+    print("Hash: ",Hash)
+    print("Sid: ",request.sid)
     if Hash != None:
         pika_client = pika.BlockingConnection(pika.URLParameters(MQ_URL))
         channel = pika_client.channel()
