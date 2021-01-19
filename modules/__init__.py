@@ -6,6 +6,7 @@ from flask_marshmallow import Marshmallow
 from modules.config import Config
 from celery import Celery
 import threading
+import eventlet
 import time
 import redis
 import pika
@@ -26,6 +27,9 @@ redis_client = redis.StrictRedis(host='104.43.214.159',port=6379)
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
     app.debug = debug
+
+    eventlet.monkey_patch()
+
     app.config.from_object(Config)
 
     db.init_app(app)
@@ -35,7 +39,7 @@ def create_app(debug=False,config_class=Config):
     #async_task.conf.update(app.config)
     mail.init_app(app)
     ma.init_app(app)
-    socketio.init_app(app,cors_allowed_origins="*",message_queue=REDIS_URL)
+    socketio.init_app(app,cors_allowed_origins="*",message_queue=REDIS_URL,async_mode='eventlet')
     
     redis_client.set('match_queue_count',0)
 
