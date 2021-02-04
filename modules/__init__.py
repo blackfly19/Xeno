@@ -12,9 +12,6 @@ import redis
 import pika
 import os
 
-#redis-cli -h xeno.redis.cache.windows.net -p 6379 -a 6RQloG0iuUQxMDtvcsiK5JpaElI8poZIBIfHhSOH3LQ=
-
-
 socketio = SocketIO()
 db = SQLAlchemy()
 mail = Mail()
