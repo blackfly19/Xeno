@@ -19,10 +19,10 @@ socketio = SocketIO()
 db = SQLAlchemy()
 mail = Mail()
 ma = Marshmallow()
-REDIS_URL = 'redis://104.43.214.159'
+REDIS_URL = os.environ.get('REDIS_URL')
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
 
-redis_client = redis.StrictRedis(host='104.43.214.159',port=6379)
+redis_client = redis.StrictRedis(host=REDIS_URL,port=6379)
 
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
