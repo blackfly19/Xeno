@@ -60,11 +60,11 @@ def SeemaTaparia():
                 break
 
             hash_user2 = redis_client.lpop('matchqueue')
-            check_block = checkBlock(hash_user1,hash_user2)
-            while check_block is not None:
+            #check_block = checkBlock(hash_user1,hash_user2)
+            """while check_block is not None:
                 redis_client.rpush('matchqueue',hash_user2)
                 hash_user2 = redis_client.lpop('matchqueue')
-                check_block = checkBlock(hash_user1,hash_user2)
+                check_block = checkBlock(hash_user1,hash_user2)"""
                 
             while redis_client.exists(hash_user2) != True:
                 if redis_client.exists('matchqueue') == False:
