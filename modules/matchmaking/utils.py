@@ -53,7 +53,7 @@ def SeemaTaparia():
                 break
 
             hash_user2 = redis_client.lpop('matchqueue')
-            check_block = Block.query.filter(or_((hashId_blocker=hash_user1,hashId_blockee=hash_user2),(hashId_blocker=hash_user2,hashId_blockee=hash_user1))).first()
+            check_block = Block.query.filter(or_(and_(hashId_blocker=hash_user1,hashId_blockee=hash_user2),and_(hashId_blocker=hash_user2,hashId_blockee=hash_user1))).first()
             while check_block is not None:
                 redis_client.rpush('matchqueue',hash_user2)
                 hash_user2 = redis_client.lpop('matchqueue')
