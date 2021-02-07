@@ -1,6 +1,5 @@
 from modules import redis_client,REDIS_URL
 from flask_socketio import SocketIO
-from flask_sqlalche
 from modules.celery_worker import async_task
 from flask import request,current_app
 import time
