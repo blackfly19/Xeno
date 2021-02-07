@@ -1,4 +1,4 @@
-from itsdangerous import TimeJSONWebSignatureSerializer as Serializer
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import os
 
 def hash_func(s):
