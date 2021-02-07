@@ -1,5 +1,5 @@
 from modules import socketio,db
-from models import Block
+from modules.models import Block
 
 @socketio.on('addBlock')
 def addBlock(block_json):
