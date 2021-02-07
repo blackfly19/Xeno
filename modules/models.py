@@ -17,6 +17,12 @@ class User(db.Model):
     interest_4 = db.Column('interest4',db.String(150),nullable=True)
     interest_5 = db.Column('interest5',db.String(150),nullable=True)
 
+class Block(db.Model):
+    id = db.Column('id',db.Integer,primary_key=True,autoincrement=True)
+    hashId_blocker = db.Column('hashId_blocker',db.String(40),nullable=False)
+    hashId_blockee = db.Column('hashId_blockee',db.String(40),nullable=False)
+
+
 class UserSchema(ma.Schema):
     class Meta:
         fields = ['username','hashID','imageUrl']

@@ -1,7 +1,7 @@
 import json
 import random as rd
 from flask import request
-from .utils import hash_func
+from .utils import hash_func,get_confirm_token
 from modules import db,mail,socketio,redis_client,MQ_URL
 from modules.models import User,UserSchema
 from flask_mail import Message
@@ -22,7 +22,8 @@ def newUser(new_data):
                     interest_5=data['interests'][4])
     db.session.add(new_user)
     msg = Message('Xeno',sender='xeno@support.com',recipients=[data['email']])
-    msg.body = 'Your account with username ' + data['name'] + ' has been registered'
+    msg.body = "Your account has been registered.Please click on the link to verify your account. https://getxeno.in/"+get_confirm_token()
+    #msg.body = 'Your account with username ' + data['name'] + ' has been registered'
     mail.send(msg)
     print('Sent')
     redis_client.set(request.sid,data['hashID'])
