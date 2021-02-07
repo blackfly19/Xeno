@@ -1,5 +1,5 @@
 from modules import socketio,MQ_URL,redis_client
-from models import Block
+from modules.models import Block
 from .utils import hash_func
 from flask_socketio import emit
 from flask import request
