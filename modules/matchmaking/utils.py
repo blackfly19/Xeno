@@ -9,8 +9,8 @@ import json
 socket = SocketIO(message_queue=REDIS_URL)
 
 def checkBlock(hash_user1,hash_user2):
-    check_block = Block.query.filter_by(hashId_blocker==hash_user1,hashId_blockee==hash_user2).first()
-    check_block = Block.query.filter_by(hashId_blocker==hash_user2,hashId_blockee==hash_user1).first()
+    check_block = Block.query.filter_by(hashId_blocker=hash_user1,hashId_blockee=hash_user2).first()
+    check_block = Block.query.filter_by(hashId_blocker=hash_user2,hashId_blockee=hash_user1).first()
     return check_block
 
 @async_task.task()
