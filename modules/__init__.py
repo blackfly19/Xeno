@@ -46,11 +46,13 @@ def create_app(debug=False,config_class=Config):
     from modules.chat import chat
     from modules.matchmaking import matchmaking
     from modules.dashboard import dashboard
+    from modules.block import block
 
     app.register_blueprint(main)
     app.register_blueprint(authentication)
     app.register_blueprint(chat)
     app.register_blueprint(matchmaking)
     app.register_blueprint(dashboard)
+    app.register_blueprint(block)
 
     return app
