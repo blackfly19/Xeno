@@ -9,6 +9,6 @@ def hash_func(s):
     index = hash_val%1000
     return index
 
-def get_confirm_token(self,hashID,expires_sec=1800):
-        s = Serializer(os.environ.get('SECRET_KEY'),expires_sec)
-        return s.dumps({'hash_id':hashID}).decode('utf-8')
+def get_confirm_token(hashID,expires_sec=1800):
+    s = Serializer(os.environ.get('SECRET_KEY'),expires_sec)
+    return s.dumps({'hash_id':hashID}).decode('utf-8')
