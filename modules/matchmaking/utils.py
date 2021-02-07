@@ -1,5 +1,6 @@
 from modules import redis_client,REDIS_URL
 from flask_socketio import SocketIO
+from flask_sqlalche
 from modules.celery_worker import async_task
 from flask import request,current_app
 import time
@@ -7,6 +8,11 @@ from modules.models import User,Block
 import json
 
 socket = SocketIO(message_queue=REDIS_URL)
+
+def checkBlock(hash_user1,hash_user2):
+    check_block = Block.query.filter_by(hashId_blocker==hash_user1,hashId_blockee==hash_user2).first()
+    check_block = Block.query.filter_by(hashId_blocker==hash_user2,hashId_blockee==hash_user1).first()
+    return check_block
 
 @async_task.task()
 def Wait():
@@ -53,12 +59,12 @@ def SeemaTaparia():
                 break
 
             hash_user2 = redis_client.lpop('matchqueue')
-            check_block = Block.query.filter((Block.hashId_blocker==hash_user1 & Block.hashId_blockee==hash_user2) | (Block.hashId_blocker==hash_user2 & Block.hashId_blockee==hash_user1)).first()
+            check_block = checkBlock(hash_user1,hash_user2)
             while check_block is not None:
                 redis_client.rpush('matchqueue',hash_user2)
                 hash_user2 = redis_client.lpop('matchqueue')
-                check_block = Block.query.filter((Block.hashId_blocker==hash_user1 & Block.hashId_blockee==hash_user2) | (Block.hashId_blocker==hash_user2 & Block.hashId_blockee==hash_user1)).first()
-
+                check_block = checkBlock(hash_user1,hash_user2)
+                
             while redis_client.exists(hash_user2) != True:
                 if redis_client.exists('matchqueue') == False:
                     redis_client.rpush('matchqueue',hash_user1)
