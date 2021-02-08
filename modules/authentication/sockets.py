@@ -1,7 +1,7 @@
 import json
 import random as rd
 from flask import request
-from .utils import hash_func,get_confirm_token
+from .utils import hash_func,get_confirm_token,convert_base64_to_url
 from modules import db,mail,socketio,redis_client,MQ_URL
 from modules.models import User,UserSchema
 from flask_mail import Message
@@ -12,7 +12,8 @@ import pika
 def newUser(new_data):
     print(new_data)
     data = json.loads(new_data)
-    url = 'https://res.cloudinary.com/fsduhag8/image/upload/v1601748391/renderDPs/m'+str(rd.randint(1,6))+'.jpg'
+    url = convert_base64_to_url(data['base64'],data['hashID'])
+    #url = 'https://res.cloudinary.com/fsduhag8/image/upload/v1601748391/renderDPs/m'+str(rd.randint(1,6))+'.jpg'
     print(url)
     new_user = User(hashID = data['hashID'],username=data['name'],
                     email=data['email'],notif_token=data['token'],

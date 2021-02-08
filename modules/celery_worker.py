@@ -1,5 +1,6 @@
 from modules import create_app
 from celery import Celery
+import time
 
 def make_celery(app):
     celery = Celery(
@@ -17,6 +18,14 @@ def make_celery(app):
     return celery
 
 async_task = make_celery(create_app())
+
+@async_task.task()
+def keep_redis_active():
+    while 1:
+        redis_client.ping()
+        time.sleep(60)
+
+keep_redis_active.delay()
 
 from modules.matchmaking.utils import SeemaTaparia
 SeemaTaparia.delay()

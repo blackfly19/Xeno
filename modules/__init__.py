@@ -5,7 +5,6 @@ from flask_mail import Mail
 from flask_marshmallow import Marshmallow
 from modules.config import Config
 from celery import Celery
-import threading
 import eventlet
 import time
 import redis
@@ -19,6 +18,7 @@ ma = Marshmallow()
 REDIS_IP = os.environ.get('REDIS_IP')
 REDIS_URL = os.environ.get('REDIS_URL')
 MQ_URL = os.environ.get('CLOUDAMQP_URL')
+
 
 redis_client = redis.StrictRedis(host=REDIS_IP,port=6379)
 
