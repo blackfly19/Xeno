@@ -1,5 +1,6 @@
 from flask_socketio import emit
-from modules import socketio,MQ_URL,redis_client
+from flask import current_app
+from modules import socketio,redis_client
 import pika
 from .utils import hash_func
 from modules.models import User
@@ -21,7 +22,7 @@ def broadcast(message):
     for i,user in enumerate(users):
         receiver=redis_client.get(user.hashID)
         if receiver is None:
-            pika_client = pika.BlockingConnection(pika.URLParameters(MQ_URL))
+            pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config[MQ_URL]))
             channel = pika_client.channel()
             queue_val = hash_func(user.hashID)
             #channel.queue_declare(queue=str(queue_val))

@@ -1,8 +1,8 @@
 import json
 import random as rd
-from flask import request
+from flask import request,current_app
 from .utils import hash_func,get_confirm_token,convert_base64_to_url
-from modules import db,mail,socketio,redis_client,MQ_URL
+from modules import db,mail,socketio,redis_client
 from modules.models import User,UserSchema
 from flask_mail import Message
 from flask_socketio import emit
@@ -29,7 +29,7 @@ def newUser(new_data):
     print('Sent')
     redis_client.set(request.sid,data['hashID'])
     redis_client.set(data['hashID'],request.sid)
-    pika_client = pika.BlockingConnection(pika.URLParameters(MQ_URL))
+    pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config['MQ_URL']))
     channel = pika_client.channel()
     queue_val = hash_func(data['hashID'])
     val = channel.queue_declare(queue=str(queue_val))

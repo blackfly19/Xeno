@@ -14,3 +14,6 @@ class Config:
     CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME')
     CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY')
     CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET')
+    REDIS_IP = os.environ.get('REDIS_IP')
+    REDIS_URL = os.environ.get('REDIS_URL')
+    MQ_URL = os.environ.get('CLOUDAMQP_URL')

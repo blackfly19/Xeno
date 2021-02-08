@@ -1,4 +1,4 @@
-from modules import create_app
+from modules import create_app,redis_client
 from celery import Celery
 import time
 
