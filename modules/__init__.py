@@ -19,9 +19,6 @@ ma = Marshmallow()
 #REDIS_URL = os.environ.get('REDIS_URL')
 #MQ_URL = os.environ.get('CLOUDAMQP_URL')
 
-
-redis_client = redis.StrictRedis(host=current_app.config['REDIS_IP'],port=6379)
-
 def create_app(debug=False,config_class=Config):
     app = Flask(__name__)
     app.debug = debug
@@ -56,3 +53,5 @@ def create_app(debug=False,config_class=Config):
     app.register_blueprint(block)
 
     return app
+
+redis_client = redis.StrictRedis(host=current_app.config['REDIS_IP'],port=6379)

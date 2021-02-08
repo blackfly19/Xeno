@@ -12,7 +12,7 @@ import pika
 def newUser(new_data):
     print(new_data)
     data = json.loads(new_data)
-    url = convert_base64_to_url(data['base64'],data['hashID'])
+    url = convert_base64_to_url(data['dpBase64'],data['hashID'])
     #url = 'https://res.cloudinary.com/fsduhag8/image/upload/v1601748391/renderDPs/m'+str(rd.randint(1,6))+'.jpg'
     print(url)
     new_user = User(hashID = data['hashID'],username=data['name'],
