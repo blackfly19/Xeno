@@ -21,6 +21,7 @@ eventlet==0.30.1
 Flask==1.1.2
 Flask-Mail==0.9.1
 flask-marshmallow==0.14.0
+flask-redis==0.4.0
 Flask-SocketIO==5.0.1
 Flask-SQLAlchemy==2.4.4
 greenlet==1.0.0
@@ -34,6 +35,7 @@ kombu==5.0.2
 lockfile==0.12.2
 MarkupSafe==1.1.1
 marshmallow==3.10.0
+marshmallow-sqlalchemy==0.24.2
 msgpack==0.6.2
 packaging==20.3
 pep517==0.8.2

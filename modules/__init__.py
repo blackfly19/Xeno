@@ -7,7 +7,8 @@ from modules.config import Config
 from celery import Celery
 import eventlet
 import time
-import redis
+#import redis
+from flask_redis import FlaskRedis
 import pika
 import os
 
@@ -15,6 +16,7 @@ socketio = SocketIO()
 db = SQLAlchemy()
 mail = Mail()
 ma = Marshmallow()
+redis_client = FlaskRedis()
 #REDIS_IP = os.environ.get('REDIS_IP')
 #REDIS_URL = os.environ.get('REDIS_URL')
 #MQ_URL = os.environ.get('CLOUDAMQP_URL')
@@ -35,7 +37,8 @@ def create_app(debug=False,config_class=Config):
     mail.init_app(app)
     ma.init_app(app)
     socketio.init_app(app,cors_allowed_origins="*",message_queue=app.config['REDIS_URL'],async_mode='eventlet')
-    
+    redis_client.init_app(app)
+
     redis_client.set('match_queue_count',0)
 
     from modules.main import main
@@ -53,5 +56,3 @@ def create_app(debug=False,config_class=Config):
     app.register_blueprint(block)
 
     return app
-
-redis_client = redis.StrictRedis(host=os.environ.get('REDIS_IP'),port=6379)
