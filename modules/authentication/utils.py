@@ -22,10 +22,10 @@ def get_confirm_token(hashID,expires_sec=1800):
 def convert_base64_to_url(encoded_img,imageFileName):
     in_mem = io.BytesIO(base64.b64decode(encoded_img))
     img = Image.open(in_mem)
-    im.save(in_mem,format='JPEG')
+    img.save(in_mem,format='JPEG')
     in_mem.seek(0)
 
     cloudinary.config(cloud_name=current_app.config['CLOUDINARY_CLOUD_NAME'],
                         api_key=current_app.config['CLOUDINARY_API_KEY'],
                         api_secret=current_app.config['CLOUDINARY_API_SECRET'])
-    Uploader.upload(in_mem_file,public_id=imageFileName)
+    Uploader.upload(in_mem,public_id=imageFileName)

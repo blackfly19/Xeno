@@ -24,7 +24,7 @@ def mapHashID(Hash):
     print("Hash: ",Hash)
     print("Sid: ",request.sid)
     if Hash != None:
-        pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config[MQ_URL]))
+        pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config['MQ_URL']))
         channel = pika_client.channel()
 
         if redis_client.exists(Hash):
