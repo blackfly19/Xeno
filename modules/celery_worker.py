@@ -19,13 +19,7 @@ def make_celery(app):
 
 async_task = make_celery(create_app())
 
-@async_task.task()
-def keep_redis_active():
-    while 1:
-        redis_client.ping()
-        time.sleep(60)
 
-keep_redis_active.delay()
-
-from modules.matchmaking.utils import SeemaTaparia
+from modules.matchmaking.utils import SeemaTaparia,keep_redis_active
 SeemaTaparia.delay()
+keep_redis_active.delay()
