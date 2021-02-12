@@ -102,9 +102,3 @@ def SeemaTaparia():
             socket.emit('xenoHashID',user2_json,room=redis_client.get(hash_user1).decode('utf-8'))
         
             print('values emitted')
-
-@async_task.task()
-def keep_redis_active():
-    while 1:
-        redis_client.ping()
-        time.sleep(60)
