@@ -8,7 +8,7 @@ from .utils import hash_func
 @socketio.on('connect')
 def connect():
     print("Connected: ",request.sid)
-    emit('authorize',room=request.sid)
+    emit('authorize',1,room=request.sid)
 
 @socketio.on('disconnect')
 def disconnect():
