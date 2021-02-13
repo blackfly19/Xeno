@@ -22,7 +22,7 @@ def newUser(new_data):
                     interest_3=data['interests'][2],interest_4=data['interests'][3],
                     interest_5=data['interests'][4])
     db.session.add(new_user)
-    msg = Message('Xeno',sender='bsdk@gmail.com',recipients=[data['email']])
+    msg = Message('Xeno',sender='support@getxeno.in',recipients=[data['email']])
     msg.body = "Your account has been registered.Please click on the link to verify your account. https://xeno-website.herokuapp.com/"+get_confirm_token(data['hashID'])
     #msg.body = 'Your account with username ' + data['name'] + ' has been registered'
     mail.send(msg)
