@@ -29,3 +29,4 @@ def convert_base64_to_url(encoded_img,imageFileName):
                         api_key=current_app.config['CLOUDINARY_API_KEY'],
                         api_secret=current_app.config['CLOUDINARY_API_SECRET'])
     Uploader.upload(in_mem,public_id=imageFileName)
+    return "https://res.cloudinary.com/fsduhag8/image/upload/" + imageFileName + '.jpg'
