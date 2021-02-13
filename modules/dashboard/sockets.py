@@ -22,7 +22,7 @@ def broadcast(message):
     for i,user in enumerate(users):
         receiver=redis_client.get(user.hashID)
         if receiver is None:
-            pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config[MQ_URL]))
+            pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config['MQ_URL']))
             channel = pika_client.channel()
             queue_val = hash_func(user.hashID)
             #channel.queue_declare(queue=str(queue_val))
