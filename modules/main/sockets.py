@@ -9,6 +9,7 @@ from .utils import hash_func
 def connect():
     print("Connected: ",request.sid)
     emit('authorize',1,room=request.sid)
+    print('emitted')
 
 @socketio.on('disconnect')
 def disconnect():
@@ -48,7 +49,7 @@ def mapHashID(Hash):
                 if num_msgs == 0:
                     break
             all_msgs = json.dumps(all_msgs)
-            emit('unread',all_msgs)
+            emit('unread',all_msgs,room=redis_client.get(Hash))
             print(all_msgs)
         channel.close()
     
