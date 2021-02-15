@@ -3,12 +3,14 @@ import json
 import pika
 from flask_socketio import emit
 from modules import socketio,redis_client
-from .utils import hash_func
+from .utils import hash_func,emit_for_auth
 
 @socketio.on('connect')
 def connect():
-    print("Connected: ",request.sid)
-    emit('authorize',1,room=request.sid)
+    sid = request.sid
+    print("Connected: ",sid)
+    emit_for_auth(sid)
+    #emit('authorize',1,room=request.sid)
     print('emitted')
 
 @socketio.on('disconnect')
