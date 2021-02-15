@@ -3,7 +3,7 @@ import json
 import pika
 from flask_socketio import emit
 from modules import socketio,redis_client
-from .utils import hash_func,emit_for_auth,ack
+from .utils import hash_func
 
 @socketio.on('connect')
 def connect():
