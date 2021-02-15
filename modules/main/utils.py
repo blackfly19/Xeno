@@ -9,8 +9,5 @@ def hash_func(s):
     index = hash_val%1000
     return index
 
-def emit_for_auth(sid):
-    emit('authorize',1,room=sid)
-
 def ack():
     print("Message emitted")

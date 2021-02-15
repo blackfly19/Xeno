@@ -9,7 +9,7 @@ from .utils import hash_func,emit_for_auth,ack
 def connect():
     sid = request.sid
     print("Connected: ",sid)
-    socketio.emit('authorize',1,to=request.sid)
+    emit('authorize',1,room=sid)
 
 @socketio.on('disconnect')
 def disconnect():
