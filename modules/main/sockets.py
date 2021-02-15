@@ -3,15 +3,13 @@ import json
 import pika
 from flask_socketio import emit
 from modules import socketio,redis_client
-from .utils import hash_func,emit_for_auth
+from .utils import hash_func,emit_for_auth,ack
 
 @socketio.on('connect')
 def connect():
     sid = request.sid
     print("Connected: ",sid)
-    emit_for_auth(sid)
-    #emit('authorize',1,room=request.sid)
-    print('emitted')
+    emit('authorize',1,room=request.sid,callback=ack)
 
 @socketio.on('disconnect')
 def disconnect():
