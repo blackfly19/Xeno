@@ -10,7 +10,7 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS')
     MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL')
-    CELERY_BROKER_URL = os.environ.get('REDIS_URL')
+    CELERY_BROKER_URL = os.environ.get('MESSAGE_REDIS_URL')
     CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME')
     CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY')
     CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET')
