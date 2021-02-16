@@ -5,7 +5,8 @@ import time
 def make_celery(app):
     celery = Celery(
         app.import_name,
-        broker=app.config['CELERY_BROKER_URL']
+        broker=app.config['CELERY_BROKER_URL'],
+        broker_heartbeat=30
     )
     celery.conf.update(app.config)
 
