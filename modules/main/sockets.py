@@ -49,7 +49,7 @@ def mapHashID(Hash):
                 if num_msgs == 0:
                     break
             all_msgs = json.dumps(all_msgs)
-            emit('unread',all_msgs,room=redis_client.get(Hash))
+            emit('unread',all_msgs,room=redis_client.get(Hash).decode('utf-8'))
             print(all_msgs)
         channel.close()
     
