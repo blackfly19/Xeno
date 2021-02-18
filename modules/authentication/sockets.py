@@ -13,7 +13,7 @@ def newUser(new_data):
     data = json.loads(new_data)
     url = convert_base64_to_url(data['dpBase64'],data['hashID'])
     print(url)
-    emit('authDpUrl',url)
+    #emit('authDpUrl',url)
     new_user = User(hashID = data['hashID'],username=data['name'],
                     email=data['email'],notif_token=data['token'],
                     phone=data['phone'],verified=data['verified'],imageUrl=url,
