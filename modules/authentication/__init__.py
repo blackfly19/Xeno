@@ -1,5 +1,5 @@
 from flask import Blueprint
 
-authentication = Blueprint('authentication',__name__)
+authentication = Blueprint('authentication', __name__)
 
 from . import sockets

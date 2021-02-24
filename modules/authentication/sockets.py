@@ -20,14 +20,47 @@ def newUser(new_data):
                     interest_3=data['interests'][2], interest_4=data['interests'][3],
                     interest_5=data['interests'][4])
     db.session.add(new_user)
-    msg = Message('Xeno', sender='support@getxeno.in', recipients=[data['email']])
-    msg.body = "Hey " + data['name']+",\nThank you for registering with Xeno.\nYour verification link is: " + \
-        get_confirm_token(data['hashID'])+"\n\n Have fun, and keep xeno-ing,Team Xeno"
+    msg = Message('Xeno', sender='support@getxeno.in',
+                  recipients=[data['email']])
+    # msg.body = "Hey " + data['name']+",\nThank you for registering with Xeno.\nYour verification link is: https://xeno-website.herokuapp.com/" + \
+    #    get_confirm_token(data['hashID']) + \
+    #    "\n\n Have fun, and keep xeno-ing.\nTeam Xeno"
+    msg.html = """<html >
+  <head>
+    <title>Xeno | Verification</title>
+  </head>
+  <body>
+    <main style="margin-top: 15%;
+    margin-left:25%;
+    ">
+      <h2 style=>Hey {},</h2>
+      <span>Thank you for registering with Xeno. </span>
+      <p>
+        Just one step remains before you ecperience Xeno.<br />
+        Click on the link below to verify your account.
+      </p>
+      <a href ="{}">
+      <button style='width: 400px;
+
+      height:50px; background-color: #0f44C7;
+      ; color:white; font-weight: bold;'>VERIFY EMAIL</button>
+      </a>
+      <footer style='position:absolute;
+      bottom: 30px;
+      font-size:15px;
+      color:grey;
+        text-align: center;'   >
+          This is a system generated email from Xeno. Do not reply to this.
+      </footer>
+    </main>
+  </body>
+</html>""".format(data['name'], "https://xeno-website.herokuapp.com/" + get_confirm_token(data['hashID']))
     mail.send(msg)
     print('Sent')
     redis_client.set(request.sid, data['hashID'])
     redis_client.set(data['hashID'], request.sid)
-    pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config['MQ_URL']))
+    pika_client = pika.BlockingConnection(
+        pika.URLParameters(current_app.config['MQ_URL']))
     channel = pika_client.channel()
     queue_val = hash_func(data['hashID'])
     channel.queue_declare(queue=str(queue_val))
