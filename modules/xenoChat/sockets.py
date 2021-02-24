@@ -10,9 +10,15 @@ def match(Hash):
     redis_client.rpush('matchqueue',Hash)
     redis_client.incr('match_queue_count')
 
-#@socketio.on('matchCancel')
-#def cancel(Hash):
-#    redis_client.hset('cancel',Hash,1)
+@socketio.on('xenoMessage')
+def xenoMessage(message):
+    msg = json.loads(message)
+    print(message)
+    #print(redis_client.get(msg['friendHashID']))
+    receiver=redis_client.get(msg['friendHashID'])
+    receiver = receiver.decode('utf-8')
+    emit('xenoReceipt',msg['id'],room=request.sid)
+    emit('xenoMessage',message,room=receiver)
 
 @socketio.on('addOwnFirst')
 def firstTimer(timer_data):
