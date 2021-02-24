@@ -20,6 +20,5 @@ def make_celery(app):
 
 async_task = make_celery(create_app())
 
-
-from modules.matchmaking.utils import SeemaTaparia
+from modules.xenoChat.utils import SeemaTaparia
 SeemaTaparia.delay()

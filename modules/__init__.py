@@ -41,7 +41,7 @@ def create_app(debug=False,config_class=Config):
     from modules.main import main
     from modules.authentication import authentication
     from modules.chat import chat
-    from modules.matchmaking import matchmaking
+    from modules.xenoChat import xenoChat
     from modules.dashboard import dashboard
     from modules.block import block
 
