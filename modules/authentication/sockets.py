@@ -50,7 +50,8 @@ def newUser(new_data):
       font-size:15px;
       color:grey;
         text-align: center;'   >
-          This is a system generated email from Xeno. Do not reply to this.
+          This is a system generated email from Xeno. Do not reply to this.<br/>
+          ~ Team Xeno
       </footer>
     </main>
   </body>
