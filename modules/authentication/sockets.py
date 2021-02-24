@@ -1,5 +1,5 @@
 import json
-from flask import request, current_app
+from flask import request, current_app, render_template
 from .utils import hash_func, get_confirm_token, convert_base64_to_url
 from modules import db, mail, socketio, redis_client
 from modules.models import User
@@ -22,40 +22,7 @@ def newUser(new_data):
     db.session.add(new_user)
     msg = Message('Xeno', sender='support@getxeno.in',
                   recipients=[data['email']])
-    # msg.body = "Hey " + data['name']+",\nThank you for registering with Xeno.\nYour verification link is: https://xeno-website.herokuapp.com/" + \
-    #    get_confirm_token(data['hashID']) + \
-    #    "\n\n Have fun, and keep xeno-ing.\nTeam Xeno"
-    msg.html = """<html >
-  <head>
-    <title>Xeno | Verification</title>
-  </head>
-  <body>
-    <main style="margin-top: 15%;
-    margin-left:25%;
-    ">
-      <h2 style=>Hey {},</h2>
-      <span>Thank you for registering with Xeno. </span>
-      <p>
-        Just one step remains before you ecperience Xeno.<br />
-        Click on the link below to verify your account.
-      </p>
-      <a href ="{}">
-      <button style='width: 400px;
-
-      height:50px; background-color: #0f44C7;
-      ; color:white; font-weight: bold;'>VERIFY EMAIL</button>
-      </a>
-      <footer style='position:absolute;
-      bottom: 30px;
-      font-size:15px;
-      color:grey;
-        text-align: center;'   >
-          This is a system generated email from Xeno. Do not reply to this.<br/>
-          ~ Team Xeno
-      </footer>
-    </main>
-  </body>
-</html>""".format(data['name'], "https://xeno-website.herokuapp.com/" + get_confirm_token(data['hashID']))
+    msg.html = render_template('email.html', name=data['hashID'], url="https://xeno-website.herokuapp.com/"+get_confirm_token(data['hashID']))
     mail.send(msg)
     print('Sent')
     redis_client.set(request.sid, data['hashID'])
