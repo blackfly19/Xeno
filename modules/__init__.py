@@ -48,7 +48,7 @@ def create_app(debug=False,config_class=Config):
     app.register_blueprint(main)
     app.register_blueprint(authentication)
     app.register_blueprint(chat)
-    app.register_blueprint(matchmaking)
+    app.register_blueprint(xenoChat)
     app.register_blueprint(dashboard)
     app.register_blueprint(block)
 
