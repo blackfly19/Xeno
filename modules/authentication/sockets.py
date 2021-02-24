@@ -22,7 +22,7 @@ def newUser(new_data):
     db.session.add(new_user)
     msg = Message('Xeno', sender='support@getxeno.in',
                   recipients=[data['email']])
-    msg.html = render_template('email.html', name=data['hashID'], url="https://xeno-website.herokuapp.com/"+get_confirm_token(data['hashID']))
+    msg.html = render_template('email.html', name=data['name'], url="https://xeno-website.herokuapp.com/"+get_confirm_token(data['hashID']))
     mail.send(msg)
     print('Sent')
     redis_client.set(request.sid, data['hashID'])
