@@ -44,6 +44,7 @@ def create_app(debug=False,config_class=Config):
     from modules.xenoChat import xenoChat
     from modules.dashboard import dashboard
     from modules.block import block
+    from modules.feedbackAndChanges import feedbackAndChanges
 
     app.register_blueprint(main)
     app.register_blueprint(authentication)
@@ -51,5 +52,6 @@ def create_app(debug=False,config_class=Config):
     app.register_blueprint(xenoChat)
     app.register_blueprint(dashboard)
     app.register_blueprint(block)
+    app.register_blueprint(feedbackAndChanges)
 
     return app
