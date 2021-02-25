@@ -10,9 +10,9 @@ def feedback(feedback_json):
     msg.body = 'Email: '+data['email'] + '\n\nFeedback: ' + data['content'] + '\n\nDevice: ' + data['device'] + '\nOS: ' + data['os'] + '\nApp Version: ' + data['appV']
     mail.send(msg)
 
-"""@socketio.on('nameChange')
+@socketio.on('nameChange')
 def nameChange(name_json):
     data = json.loads(name_json)
-    msg = Message('Name Change', sender='support@getxeno.in', recipients=['support@getxeno.in'])
-    msg.body =
-    mail.send(msg)"""
+    msg = Message('Name Change Request', sender='support@getxeno.in', recipients=['support@getxeno.in'])
+    msg.body = 'Email: '+data['email']+'\nOld Name: '+data['oldName']+'\nNew Name: '+data['newName']
+    mail.send(msg)
