@@ -34,7 +34,10 @@ def newUser(new_data):
     channel.queue_declare(queue=str(queue_val))
     channel.close()
     db.session.commit()
-    emit('message','Welcome To Xeno!',room=request.sid)
+    msg = {'id': int(time.time() * 1000), "userHashID": "42424242424242424242424242424242",
+                   "friendHashID": user.hashID, "content": "Welcome To Xeno!"}
+    msg = json.dumps(msg)
+    emit('message',msg,room=request.sid)
 
 
 @socketio.on('validatePhone')
