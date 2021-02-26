@@ -1,4 +1,5 @@
-from modules import mail, socketio
+from modules import mail, socketio, db
+from modules.models import User
 from flask_mail import Message
 import json
 
@@ -16,3 +17,14 @@ def nameChange(name_json):
     msg = Message('Name Change Request', sender='support@getxeno.in', recipients=['support@getxeno.in'])
     msg.body = 'Email: '+data['email']+'\nCurrent Name: '+data['currentName']+'\nNew Name: '+data['newName']
     mail.send(msg)
+
+@socketio.on('newInterests')
+def interestChange(newInterests):
+    data_interests = json.loads(newInterests)
+    user_obj = User.query.filter_by(hashID=data_interests['hashID']).first()
+    user_obj.interest_1 = data_interests['interests'][0]
+    user_obj.interest_2 = data_interests['interests'][1]
+    user_obj.interest_3 = data_interests['interests'][2]
+    user_obj.interest_4 = data_interests['interests'][3]
+    user_obj.interest_5 = data_interests['interests'][4]
+    db.session.commit()
