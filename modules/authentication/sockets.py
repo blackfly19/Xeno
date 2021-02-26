@@ -34,6 +34,7 @@ def newUser(new_data):
     channel.queue_declare(queue=str(queue_val))
     channel.close()
     db.session.commit()
+    emit('message','Welcome To Xeno!',room=request.sid)
 
 
 @socketio.on('validatePhone')

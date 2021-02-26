@@ -25,6 +25,12 @@ def interestChange(newInterests):
     user_obj.interest_1 = data_interests['interests'][0]
     user_obj.interest_2 = data_interests['interests'][1]
     user_obj.interest_3 = data_interests['interests'][2]
-    user_obj.interest_4 = data_interests['interests'][3]
-    user_obj.interest_5 = data_interests['interests'][4]
+    try:
+        user_obj.interest_4 = data_interests['interests'][3]
+    except IndexError:
+        user_obj.interest_4 = None
+    try:
+        user_obj.interest_5 = data_interests['interests'][4]
+    except IndexError:
+        user_obj.interest_5 = None
     db.session.commit()
