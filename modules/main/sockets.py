@@ -35,7 +35,7 @@ def mapHashID(Hash):
 
         if redis_client.hexists('NameChange',Hash):
             name_email = redis_client.hget('NameChange',Hash).decode('utf-8')
-            name_email.split(' ')
+            name_email = name_email.split(' ')
             name_json = json.dumps({'hashID':Hash,'newName':name_email[1],'email':name_email[0]})
             emit('nameChange',name_json,room=request.sid)
             redis_client.hdel('NameChange',Hash)
