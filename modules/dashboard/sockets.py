@@ -62,7 +62,7 @@ def nameChangeAccepted(name_json):
         emit('nameChange', name_json, room=receiver)
     db.session.commit()
 
-@socketio.on('nameChangeDenied')
+@socketio.on('dashNameChangeDenied')
 def nameChangeDenied(name_json):
     data = json.loads(name_json)
     message = "Your request for name change couldn't be processed, as the name you requested doesn't match the official records. If you believe this is an error from our end, please drop us a feedback regarding this."
