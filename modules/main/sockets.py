@@ -33,12 +33,12 @@ def mapHashID(Hash):
         redis_client.set(request.sid,Hash)
         redis_client.set(Hash,request.sid)
 
-        if redis_client.hexists('nameChange',Hash):
-            name_email = redis_client.hget('nameChange',Hash).decode('utf-8')
+        if redis_client.hexists('NameChange',Hash):
+            name_email = redis_client.hget('NameChange',Hash).decode('utf-8')
             name_email.split(' ')
             name_json = json.dumps({'hashID':Hash,'newName':name_email[1],'email':name_email[0]})
-            emit('nameChange',name_json,room=request.sid)
-            redis_client.hdel('nameChange',Hash)
+            emit('NameChange',name_json,room=request.sid)
+            redis_client.hdel('NameChange',Hash)
 
         queue_val = hash_func(Hash)
         all_msgs = []
