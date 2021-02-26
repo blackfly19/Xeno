@@ -36,7 +36,7 @@ def newUser(new_data):
     channel.close()
     db.session.commit()
     msg = {'id': int(time.time() * 1000), "userHashID": "42424242424242424242424242424242",
-                   "friendHashID": user.hashID, "content": "Welcome To Xeno!"}
+                   "friendHashID": data['hashID'], "content": "Welcome To Xeno!"}
     msg = json.dumps(msg)
     emit('message',msg,room=request.sid)
 
