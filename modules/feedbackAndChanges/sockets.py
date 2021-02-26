@@ -14,5 +14,5 @@ def feedback(feedback_json):
 def nameChange(name_json):
     data = json.loads(name_json)
     msg = Message('Name Change Request', sender='support@getxeno.in', recipients=['support@getxeno.in'])
-    msg.body = 'Email: '+data['email']+'\nOld Name: '+data['oldName']+'\nNew Name: '+data['newName']
+    msg.body = 'Email: '+data['email']+'\nCurrent Name: '+data['currentName']+'\nNew Name: '+data['newName']
     mail.send(msg)
