@@ -69,6 +69,7 @@ def nameChangeDenied(name_json):
     user_obj = User.query.filter_by(email=data['email']).first()
     msg = {'id': int(time.time() * 1000), "userHashID": "42424242424242424242424242424242",
                    "friendHashID": user_obj.hashID, "content": message}
+    msg = json.dumps(msg)
     receiver = redis_client.get(user_obj.hashID)
     if receiver is None:
         pika_client = pika.BlockingConnection(
