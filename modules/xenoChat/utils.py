@@ -1,4 +1,4 @@
-from modules import redis_client
+from modules import redis_client,db
 import os
 from flask_socketio import SocketIO
 from modules.celery_worker import async_task
@@ -90,6 +90,8 @@ def SeemaTaparia():
 
             hash_user1 = hash_user1.decode('utf-8')
             hash_user2 = hash_user2.decode('utf-8')
+
+            db.session.commit()
 
         # redis_client.decrby('match_queue_count',2)
 

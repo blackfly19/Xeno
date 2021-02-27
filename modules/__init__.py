@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_marshmallow import Marshmallow
 from modules.config import Config
-from modules.celery_worker import make_celery
+from celery import Celery
 import time
 #import redis
 from flask_redis import FlaskRedis
@@ -16,7 +16,6 @@ db = SQLAlchemy()
 mail = Mail()
 ma = Marshmallow()
 redis_client = FlaskRedis()
-async_task = None
 #REDIS_IP = os.environ.get('REDIS_IP')
 #REDIS_URL = os.environ.get('REDIS_URL')
 #MQ_URL = os.environ.get('CLOUDAMQP_URL')
@@ -36,7 +35,6 @@ def create_app(debug=False,config_class=Config):
     ma.init_app(app)
     socketio.init_app(app,cors_allowed_origins="*",message_queue=app.config['REDIS_URL'],async_mode='eventlet')
     redis_client.init_app(app,health_check_interval=30)
-    async_task = make_celery(app)
 
     redis_client.set('match_queue_count',0)
 
@@ -55,8 +53,5 @@ def create_app(debug=False,config_class=Config):
     app.register_blueprint(dashboard)
     app.register_blueprint(block)
     app.register_blueprint(feedbackAndChanges)
-
-    from modules.xenoChat.utils import SeemaTaparia
-    SeemaTaparia.delay()
 
     return app
