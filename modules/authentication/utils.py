@@ -1,4 +1,6 @@
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from azure.cognitiveservices.vision.face import FaceClient
+from msrest.authentication import CognitiveServicesCredentials
 from flask import current_app
 import cloudinary
 import cloudinary.uploader as Uploader
@@ -33,3 +35,22 @@ def convert_base64_to_url(encoded_img, imageFileName):
                       api_secret=current_app.config['CLOUDINARY_API_SECRET'])
     image_details = Uploader.upload(in_mem, public_id=imageFileName, invalidate=True)
     return image_details['url']
+
+def face_verify(image_url,encoded_img):
+    KEY = '119eb67123d04e2b9240d563e8d3e241'
+    ENDPOINT = 'https://xeno-faceapi.cognitiveservices.azure.com/'
+
+    in_mem = io.BytesIO(base64.b64decode(encoded_img))
+    img = Image.open(in_mem)
+    img.save(in_mem,format='JPEG')
+    in_mem.seek(0)
+    
+    face_client = FaceClient(ENDPOINT, CognitiveServicesCredentials(KEY))
+    display_pic = face_client.face.detect_with_url(url=image_url, detection_model='detection_03')
+    camera_pic = face_client.face.detect_with_stream(in_mem,detection_model='detection_03')
+
+    verify_result = face_client.face.verify_face_to_face(display_pic[0].face_id,camera_pic[0].face_id)
+    print(verify_result.is_identical,verify_result.confidence)
+    
+
+

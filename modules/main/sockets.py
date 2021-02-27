@@ -9,7 +9,6 @@ from .utils import hash_func
 def connect():
     if request.args.get('api_key') != current_app.config['CONNECT_API_KEY']:
         return False
-        #raise ConnectionRefusedError("Unauthorized")
     sid = request.sid
     print("Connected: ",sid)
     emit('authorize',1,room=sid)

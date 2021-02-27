@@ -47,3 +47,8 @@ def unsent(messages):
             channel.basic_publish(exchange='', routing_key=str(queue_val), body=json_msg)
             channel.close()
         emit('receipt', msg['id'], room=request.sid)
+
+@socketio.on('friendTyping')
+def typingIndicator(typing_data):
+    typing = json.loads(typing_data)
+    emit('friendTyping',typing_data,room=redis_client.get(typing['friendHashID']))
