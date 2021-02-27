@@ -17,3 +17,4 @@ class Config:
     REDIS_IP = os.environ.get('REDIS_IP')
     REDIS_URL = os.environ.get('REDIS_URL')
     MQ_URL = os.environ.get('CLOUDAMQP_URL')
+    CONNECT_API_KEY = os.environ.get('CONNECT_API_KEY')
