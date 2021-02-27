@@ -34,3 +34,4 @@ def interestChange(newInterests):
     except IndexError:
         user_obj.interest_5 = None
     db.session.commit()
+    print("Interests Changed")

@@ -1,4 +1,5 @@
 from modules import socketio, redis_client
+from flask import request
 from modules.models import User
 from flask_socketio import emit
 import json
