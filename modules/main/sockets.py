@@ -7,6 +7,7 @@ from .utils import hash_func
 
 @socketio.on('connect')
 def connect():
+    print(request.args)
     sid = request.sid
     print("Connected: ",sid)
     emit('authorize',1,room=sid)
