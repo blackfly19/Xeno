@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_marshmallow import Marshmallow
 from modules.config import Config
-from celery import Celery
+from celery_worker import make_celery
 import time
 #import redis
 from flask_redis import FlaskRedis
