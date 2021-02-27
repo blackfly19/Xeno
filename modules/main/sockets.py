@@ -1,13 +1,15 @@
 from flask import request,current_app
 import json
 import pika
-from flask_socketio import emit
+from flask_socketio import emit,ConnectionRefusedError
 from modules import socketio,redis_client
 from .utils import hash_func
 
 @socketio.on('connect')
 def connect():
-    print(request.args.get('api_key'))
+    if request.args.get('api_key') != current_app.config['CONNECT_API_KEY']:
+        return False
+        #raise ConnectionRefusedError("Unauthorized")
     sid = request.sid
     print("Connected: ",sid)
     emit('authorize',1,room=sid)
