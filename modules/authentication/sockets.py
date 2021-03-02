@@ -16,7 +16,7 @@ def newUser(new_data):
     print(url)
     new_user = User(hashID=data['hashID'], username=data['name'],
                     email=data['email'], notif_token=data['token'],
-                    phone=data['phone'], verified=data['verified'], imageUrl=url,
+                    phone=data['phone'], verified=False, imageUrl=url,
                     interest_1=data['interests'][0], interest_2=data['interests'][1],
                     interest_3=data['interests'][2], interest_4=data['interests'][3],
                     interest_5=data['interests'][4])
