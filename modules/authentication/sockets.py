@@ -87,7 +87,7 @@ def isEmailVerified(hashID):
 @socketio.on('imageForVerification')
 def ImageVerification(data):
     image_data = json.loads(data)
-    user = User.query.filter_by(hashID=image_data['hashID'])
+    user = User.query.filter_by(hashID=image_data['hashID']).first()
     face_verify(user.imageUrl,image_data['base64'])
     result = {'hashID':image_data['hashID'],'result':False}
     receiver = redis_client.get('hashID')
