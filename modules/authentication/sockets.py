@@ -1,7 +1,7 @@
 import json
 import time
 from flask import request, current_app, render_template
-from .utils import hash_func, get_confirm_token, convert_base64_to_url
+from .utils import hash_func, get_confirm_token, convert_base64_to_url,face_verify
 from modules import db, mail, socketio, redis_client
 from modules.models import User
 from flask_mail import Message
