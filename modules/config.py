@@ -18,7 +18,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     TESTING = True
     SECRET_KEY = "Not a secret anymore"
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     CELERY_BROKER_URL = "redis://127.0.0.1"
     REDIS_URL = "redis://127.0.0.1"
     MQ_URL = "amqp://guest:guest@localhost:5672/%2F"

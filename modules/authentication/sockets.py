@@ -84,6 +84,15 @@ def isEmailVerified(hashID):
             receiver = receiver.decode('utf-8')
             emit('message',msg, room=receiver)
 
+@socketio.on('imageForVerification')
+def ImageVerification(data):
+    image_data = json.loads(data)
+    user = User.query.filter_by(hashID=image_data['hashID'])
+    face_verify(user.imageUrl,image_data['base64'])
+    result = {'hashID':image_data['hashID'],'result':False}
+    receiver = redis_client.get('hashID')
+    receiver = receiver.decode('utf-8')
+    emit('picVerified',result,room=receiver)
 
 """@socketio.on('users')
 def existingUser(check):
