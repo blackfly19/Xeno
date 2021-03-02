@@ -90,9 +90,10 @@ def ImageVerification(data):
     user = User.query.filter_by(hashID=image_data['hashID']).first()
     face_verify_result = face_verify(user.imageUrl,image_data['base64'])
     result = {'hashID':image_data['hashID'],'result':face_verify_result}
+    result_json = json.dumps(result)
     receiver = redis_client.get(image_data['hashID'])
     receiver = receiver.decode('utf-8')
-    emit('picVerified',result,room=receiver)
+    emit('picVerified',result_json,room=receiver)
 
 """@socketio.on('users')
 def existingUser(check):
