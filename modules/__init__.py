@@ -2,7 +2,7 @@ from flask import Flask,current_app
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
-from config import ProductionConfig
+from modules.config import ProductionConfig
 from flask_marshmallow import Marshmallow
 from celery import Celery
 import time
