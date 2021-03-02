@@ -3,10 +3,8 @@ from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_marshmallow import Marshmallow
-from modules.config import Config
 from celery import Celery
 import time
-#import redis
 from flask_redis import FlaskRedis
 import pika
 import os
@@ -16,25 +14,23 @@ db = SQLAlchemy()
 mail = Mail()
 ma = Marshmallow()
 redis_client = FlaskRedis()
-#REDIS_IP = os.environ.get('REDIS_IP')
-#REDIS_URL = os.environ.get('REDIS_URL')
-#MQ_URL = os.environ.get('CLOUDAMQP_URL')
 
-def create_app(debug=False,config_class=Config):
+
+def create_app(config_class):
     app = Flask(__name__)
-    app.debug = debug
 
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
 
     db.init_app(app)
-    #with app.app_context():
-        #db.create_all()
-        #db.session.commit()
-    #async_task.conf.update(app.config)
+    if os.environ.get('FLASK_ENV') == 'development':
+        with app.app_context():
+            db.create_all()
+            db.session.commit()
+
     mail.init_app(app)
     ma.init_app(app)
     socketio.init_app(app,cors_allowed_origins="*",message_queue=app.config['REDIS_URL'],async_mode='eventlet')
-    redis_client.init_app(app,health_check_interval=30)
+    redis_client.init_app(app)
 
     redis_client.set('match_queue_count',0)
 

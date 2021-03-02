@@ -61,6 +61,29 @@ def validateEmail(Email):
     else:
         emit('validateEmail', False)
 
+@socketio.on('isEmailVerified')
+def isEmailVerified(hashID):
+    user = User.query.filter_by(hashID=hashID).first()
+    if user.verified == True:
+        data = {'hashID':hashID}
+        data_json = json.dumps(data)
+        emit('emailVerified',data_json)
+        message = "Your email has been verified successfully!"
+        msg = {'id': int(time.time() * 1000), "userHashID": "42424242424242424242424242424242",
+                   "friendHashID": user.hashID, "content": message}
+        msg = json.dumps(msg)
+        receiver = redis_client.get(user.hashID)
+        if receiver is None:
+            pika_client = pika.BlockingConnection(
+                pika.URLParameters(current_app.config['MQ_URL']))
+            channel = pika_client.channel()
+            queue_val = hash_func(user.hashID)
+            channel.basic_publish(exchange='', routing_key=str(queue_val), body=msg)
+            channel.close()
+        else:
+            receiver = receiver.decode('utf-8')
+            emit('message',msg, room=receiver)
+
 
 """@socketio.on('users')
 def existingUser(check):
