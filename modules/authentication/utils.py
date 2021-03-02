@@ -51,7 +51,7 @@ def face_verify(image_url,encoded_img):
 
     verify_result = face_client.face.verify_face_to_face(display_pic[0].face_id,camera_pic[0].face_id)
     print(verify_result.is_identical,verify_result.confidence)
-    
+    return verify_result.is_identical
     
 
 
