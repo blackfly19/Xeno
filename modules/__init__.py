@@ -2,6 +2,7 @@ from flask import Flask,current_app
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
+from config import ProductionConfig
 from flask_marshmallow import Marshmallow
 from celery import Celery
 import time
@@ -16,7 +17,7 @@ ma = Marshmallow()
 redis_client = FlaskRedis()
 
 
-def create_app(config_class):
+def create_app(config_class=ProductionConfig()):
     app = Flask(__name__)
 
     app.config.from_object(config_class)
