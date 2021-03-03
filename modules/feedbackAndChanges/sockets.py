@@ -41,8 +41,8 @@ def reportFriend(data_json):
     data = json.loads(data_json)
     reporter_hashid = data['ownHashID']
     reported_hashid = data['friendHashID']
-    reporter = User.query.filter_by(hashID=reporter).first()
-    reported = User.query.filter_by(hashID=reported).first()
+    reporter = User.query.filter_by(hashID=reporter_hashid).first()
+    reported = User.query.filter_by(hashID=reported_hashid).first()
 
     print(data['content'])
     chat_data = io.StringIO(data['chatRepo'])
