@@ -46,9 +46,9 @@ def reportFriend(data_json):
     reported = User.query.filter_by(hashID=reported_hashid).first()
 
     print(data['content'])
-    #chat_data = io.StringIO(data['chatRepo'])
+    chat_data = io.StringIO('\n'.join(data['chatRepo']))
     
     msg = Message('Report', sender='support@getxeno.in', recipients=['support@getxeno.in'])
-    msg.attach("chat.json","application/json",data['chatRepo'])
+    msg.attach("chat.json","application/json",chat_data.read())
     msg.body = 'Reporter HashID: '+reporter_hashid+"\nReporter Email: "+reporter.email+'\n\nReported HashID: '+reported_hashid+"\nReporter Email: "+reported.email+ '\n\nReport: ' + data['content']
     mail.send(msg)
