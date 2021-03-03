@@ -1,12 +1,12 @@
 from modules import create_app,redis_client
 from celery import Celery
+from modules.config import ProductionConfig,DevelopmentConfig
 import time
 
 def make_celery(app):
     celery = Celery(
         app.import_name,
         broker=app.config['CELERY_BROKER_URL'],
-        broker_heartbeat=30
     )
     celery.conf.update(app.config)
 
@@ -18,7 +18,10 @@ def make_celery(app):
     celery.Task = ContextTask
     return celery
 
-async_task = make_celery(create_app())
+if os.environ.get('FLASK_ENV') == 'production':
+    async_task = make_celery(create_app(ProductionConfig())
+else:
+    async_task = make_celery(create_app(DevelopmentConfig())
 
 from modules.xenoChat.utils import SeemaTaparia
 SeemaTaparia.delay()

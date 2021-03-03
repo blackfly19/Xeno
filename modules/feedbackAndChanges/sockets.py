@@ -35,3 +35,14 @@ def interestChange(newInterests):
         user_obj.interest_5 = None
     db.session.commit()
     print("Interests Changed")
+
+@socketio.on('reportFriend')
+def reportFriend(data_json):
+    data = json.loads(data_json)
+    sender = data['ownHashID']
+    receiver = data['friendHashID']
+    print(data['content'])
+    print(data['chatRepo'])
+    """msg = Message('Report', sender='support@getxeno.in', recipients=['support@getxeno.in'])
+    msg.body = 'Email: '+data['email'] + '\n\nFeedback: ' + data['content'] + '\n\nDevice: ' + data['device'] + '\nOS: ' + data['os'] + '\nApp Version: ' + data['appV']
+    mail.send(msg)"""

@@ -30,7 +30,7 @@ def create_app(config_class=ProductionConfig()):
 
     mail.init_app(app)
     ma.init_app(app)
-    socketio.init_app(app,cors_allowed_origins="*",message_queue=app.config['REDIS_URL'],async_mode='eventlet')
+    socketio.init_app(app,cors_allowed_origins="*",message_queue=app.config['SOCKETIO_URL'],async_mode='eventlet')
     redis_client.init_app(app)
 
     redis_client.set('match_queue_count',0)

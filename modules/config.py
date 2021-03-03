@@ -11,7 +11,6 @@ class Config:
     CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME')
     CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY')
     CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET')
-    CONNECT_API_KEY = os.environ.get('CONNECT_API_KEY')
 
 class DevelopmentConfig(Config):
 
@@ -21,7 +20,9 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     CELERY_BROKER_URL = "redis://127.0.0.1"
     REDIS_URL = "redis://127.0.0.1"
+    SOCKETIO_URL = None
     MQ_URL = "amqp://guest:guest@localhost:5672/%2F"
+    CONNECT_API_KEY = "ankit"
 
 class ProductionConfig(Config):
 
@@ -31,6 +32,8 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     CELERY_BROKER_URL = os.environ.get('REDIS_URL')
     REDIS_URL = os.environ.get('REDIS_URL')
+    SOCKETIO_URL = os.environ.get('REDIS_URL')
     MQ_URL = os.environ.get('CLOUDAMQP_URL')
+    CONNECT_API_KEY = os.environ.get('CONNECT_API_KEY')
 
 

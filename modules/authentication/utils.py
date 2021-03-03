@@ -46,8 +46,8 @@ def face_verify(image_url,encoded_img):
     #in_mem.seek(0)
     
     face_client = FaceClient(ENDPOINT, CognitiveServicesCredentials(KEY))
-    display_pic = face_client.face.detect_with_url(url=image_url, detection_model='detection_03')
-    camera_pic = face_client.face.detect_with_stream(in_mem,detection_model='detection_03')
+    display_pic = face_client.face.detect_with_url(url=image_url, detection_model='detection_02')
+    camera_pic = face_client.face.detect_with_stream(in_mem,detection_model='detection_02')
     print(camera_pic[0])
     print(display_pic[0])
 

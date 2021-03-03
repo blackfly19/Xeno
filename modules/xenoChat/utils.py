@@ -7,7 +7,7 @@ import time
 from modules.models import User, Block
 import json
 
-socket = SocketIO(message_queue=os.environ.get('REDIS_URL'))
+socket = SocketIO(message_queue=os.environ.get('SOCKETIO_URL'))
 
 
 def checkBlock(hash_user1, hash_user2):

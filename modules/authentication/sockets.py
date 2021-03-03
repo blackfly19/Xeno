@@ -94,12 +94,3 @@ def ImageVerification(data):
     receiver = redis_client.get(image_data['hashID'])
     receiver = receiver.decode('utf-8')
     emit('picVerified',result_json,room=receiver)
-
-"""@socketio.on('users')
-def existingUser(check):
-    data = User.query.filter(User.hashID != redis_client.get(request.sid).decode('utf-8')).all()
-    users = UserSchema(many=True)
-    details = users.dump(data)
-    details_json = {"users":details}
-    details_json = json.dumps(details_json)
-    emit('users',details_json)"""
