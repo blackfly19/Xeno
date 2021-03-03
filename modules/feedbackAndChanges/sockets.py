@@ -49,8 +49,9 @@ def reportFriend(data_json):
     for i in data['chatRepo']:
         chats.append(json.dumps(i))
     chat_data = io.StringIO('\n'.join(chats))
+    fileName = reported.email + '_' + reporter.email
     
     msg = Message('Report', sender='support@getxeno.in', recipients=['support@getxeno.in'])
-    msg.attach("chat.json","application/json",chat_data.read())
-    msg.body = 'Reporter HashID: '+reporter_hashid+"\nReporter Email: "+reporter.email+'\n\nReported HashID: '+reported_hashid+"\nReporter Email: "+reported.email+ '\n\nReport: ' + data['content']
+    msg.attach(fileName,"application/json",chat_data.read())
+    msg.body = 'Reported HashID: '+reported_hashid+"\nReported Email: "+reported.email+'\n\nReporter HashID: '+reporter_hashid+"\nReporter Email: "+reporter.email+ '\n\nReport: ' + data['content']
     mail.send(msg)
