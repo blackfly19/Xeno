@@ -39,10 +39,15 @@ def interestChange(newInterests):
 @socketio.on('reportFriend')
 def reportFriend(data_json):
     data = json.loads(data_json)
-    sender = data['ownHashID']
-    receiver = data['friendHashID']
+    reporter_hashid = data['ownHashID']
+    reported_hashid = data['friendHashID']
+    reporter = User.query.filter_by(hashID=reporter).first()
+    reported = User.query.filter_by(hashID=reported).first()
+
     print(data['content'])
-    print(data['chatRepo'])
-    """msg = Message('Report', sender='support@getxeno.in', recipients=['support@getxeno.in'])
-    msg.body = 'Email: '+data['email'] + '\n\nFeedback: ' + data['content'] + '\n\nDevice: ' + data['device'] + '\nOS: ' + data['os'] + '\nApp Version: ' + data['appV']
-    mail.send(msg)"""
+    chat_data = io.StringIO(data['chatRepo'])
+    
+    msg = Message('Report', sender='support@getxeno.in', recipients=['support@getxeno.in'])
+    msg.attach("chat.json","application/json",chat_data.read())
+    msg.body = 'Reporter HashID: '+reporter_hashid+"\nReporter Email: "+reporter.email+'\n\nReported HashID: '+reported_hashid+"\nReporter Email: "+reported.email+ '\n\nReport: ' + data['content']
+    mail.send(msg)
