@@ -2,6 +2,7 @@ from modules import mail, socketio, db
 from modules.models import User
 from flask_mail import Message
 import json
+import io
 
 
 @socketio.on('submitFeedback')
