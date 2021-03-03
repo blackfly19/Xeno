@@ -19,7 +19,7 @@ def make_celery(app):
     return celery
 
 if os.environ.get('FLASK_ENV') == 'production':
-    async_task = make_celery(create_app(ProductionConfig())
+    async_task = make_celery(create_app(ProductionConfig()))
 else:
     async_task = make_celery(create_app(DevelopmentConfig())
 
