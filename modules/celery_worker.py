@@ -2,6 +2,7 @@ from modules import create_app,redis_client
 from celery import Celery
 from modules.config import ProductionConfig,DevelopmentConfig
 import time
+import os
 
 def make_celery(app):
     celery = Celery(
