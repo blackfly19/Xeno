@@ -43,7 +43,7 @@ def SeemaTaparia():
         if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
             if redis_client.ttl('matchqueue') == -1:
                 redis_client.expire('matchqueue', 20)
-                Wait()
+                Wait.delay()
 
         while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
@@ -51,7 +51,7 @@ def SeemaTaparia():
             #revoke(task_id, terminate=True)
             redis_client.persist('matchqueue')
             #wait_result.wait(timeout=None,interval=0.5)
-            #time.sleep(1)
+            time.sleep(1)
 
             hash_user1 = redis_client.lpop('matchqueue')
             while redis_client.exists(hash_user1) != True:
