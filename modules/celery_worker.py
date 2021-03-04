@@ -20,11 +20,15 @@ def make_celery(app):
     celery.Task = ContextTask
     return celery
 
+celery_app = None
 if os.environ.get('FLASK_ENV') == 'production':
-    async_task = make_celery(create_app(ProductionConfig()))
+    celery_app = create_app(ProductionConfig())
+    #async_task = make_celery(create_app(ProductionConfig()))
 else:
-    async_task = make_celery(create_app(DevelopmentConfig()))
+    celery_app = create_app(DevelopmentConfig())
+    #async_task = make_celery(create_app(DevelopmentConfig()))
     print("Celery in development config")
 
+async_task = make_celery(celery_app)
 from modules.xenoChat.utils import SeemaTaparia
-SeemaTaparia.delay(current_app.config['SOCKETIO_URL'])
+SeemaTaparia.delay(celery_app.config['SOCKETIO_URL'])

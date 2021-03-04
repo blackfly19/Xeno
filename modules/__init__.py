@@ -17,7 +17,7 @@ ma = Marshmallow()
 redis_client = FlaskRedis()
 
 
-def create_app(config_class=ProductionConfig()):
+def create_app(config_class):
     app = Flask(__name__)
 
     app.config.from_object(config_class)
