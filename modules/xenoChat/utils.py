@@ -20,8 +20,9 @@ def checkBlock(hash_user1, hash_user2):
 
 
 @async_task.task()
-def Wait():
+def Wait(socketio_url):
 
+    socket = SocketIO(message_queue=socketio_url)
     Hash = redis_client.lindex('matchqueue', 0)
     Hash = Hash.decode('utf-8')
     while redis_client.ttl('matchqueue') != -1 and redis_client.ttl('matchqueue') != -2:
@@ -43,7 +44,7 @@ def SeemaTaparia(socketio_url):
         if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
             if redis_client.ttl('matchqueue') == -1:
                 redis_client.expire('matchqueue', 20)
-                Wait.delay()
+                Wait.delay(socketio_url)
 
         while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
