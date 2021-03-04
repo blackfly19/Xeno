@@ -48,6 +48,7 @@ def SeemaTaparia():
 
         while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
+            Wait.revoke(terminate=True)
             redis_client.persist('matchqueue')
             #time.sleep(1)
 
