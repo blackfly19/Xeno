@@ -51,7 +51,7 @@ def SeemaTaparia():
             #task_id = Wait.request.id
             #revoke(task_id, terminate=True)
             redis_client.persist('matchqueue')
-            wait_result(timeout=None,interval=0.5)
+            wait_result.wait(timeout=None,interval=0.5)
             #time.sleep(1)
 
             hash_user1 = redis_client.lpop('matchqueue')
