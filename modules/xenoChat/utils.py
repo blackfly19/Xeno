@@ -20,7 +20,7 @@ def checkBlock(hash_user1, hash_user2):
     return check_block
 
 
-#@async_task.task()
+@async_task.task()
 def Wait():
 
     Hash = redis_client.lindex('matchqueue', 0)
