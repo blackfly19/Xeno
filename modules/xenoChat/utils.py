@@ -2,7 +2,8 @@ from modules import redis_client,db
 import os
 from flask_socketio import SocketIO
 from modules.celery_worker import async_task
-from flask import request, current_app
+from flask import request
+from celery import current_app
 import time
 from modules.models import User, Block
 import json
