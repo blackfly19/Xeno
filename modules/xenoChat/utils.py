@@ -6,7 +6,6 @@ from flask import request, current_app
 import time
 from modules.models import User, Block
 import json
-from celery.task.control import revoke
 
 socket = SocketIO(message_queue=os.environ.get('SOCKETIO_URL'))
 
@@ -39,19 +38,20 @@ def Wait():
 
 @async_task.task()
 def SeemaTaparia():
-    #app = create_app()
+    wait_result = None
     while 1:
 
         if int(redis_client.get('match_queue_count').decode('utf-8')) == 1:
             if redis_client.ttl('matchqueue') == -1:
                 redis_client.expire('matchqueue', 20)
-                Wait.delay()
+                wait_result = Wait.delay()
 
         while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
-            task_id = Wait.request.id
-            revoke(task_id, terminate=True)
+            #task_id = Wait.request.id
+            #revoke(task_id, terminate=True)
             redis_client.persist('matchqueue')
+            wait_result(timeout=None,interval=0.5)
             #time.sleep(1)
 
             hash_user1 = redis_client.lpop('matchqueue')
