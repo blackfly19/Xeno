@@ -23,6 +23,7 @@ if os.environ.get('FLASK_ENV') == 'production':
     async_task = make_celery(create_app(ProductionConfig()))
 else:
     async_task = make_celery(create_app(DevelopmentConfig()))
+    print("Celery in development config")
 
 from modules.xenoChat.utils import SeemaTaparia
 SeemaTaparia.delay()
