@@ -1,5 +1,6 @@
 from modules import create_app,redis_client
 from celery import Celery
+from flask import current_app
 from modules.config import ProductionConfig,DevelopmentConfig
 import time
 import os
@@ -26,4 +27,4 @@ else:
     print("Celery in development config")
 
 from modules.xenoChat.utils import SeemaTaparia
-SeemaTaparia.delay()
+SeemaTaparia.delay(current_app.config['SOCKETIO_URL'])
