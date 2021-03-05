@@ -1,5 +1,5 @@
 from modules import socketio, db
-from modules.models import Block
+from modules.models import Block, User
 import json
 
 
@@ -11,6 +11,8 @@ def addBlock(block_json):
         blocker_hashID=block_dict['blocker'], blockee_hashID=block_dict['blockee'])
     db.session.add(new_block)
     db.session.commit()
+    user = User.query.filter_by(hashID=block_dict['blocker'])
+    print(user.block)
 
 
 @socketio.on('removeBlock')
