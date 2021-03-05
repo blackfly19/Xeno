@@ -40,7 +40,7 @@ def face_verify(image_url,encoded_img):
     KEY = '119eb67123d04e2b9240d563e8d3e241'
     ENDPOINT = 'https://xeno-faceapi.cognitiveservices.azure.com/'
 
-    in_mem = io.BytesIO(base64.b64decode(encoded_img))
+    in_mem = base64.b64decode(encoded_img)
     #img = Image.open(in_mem)
     #img.save(in_mem,format='JPEG')
     #in_mem.seek(0)

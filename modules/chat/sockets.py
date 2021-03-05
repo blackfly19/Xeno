@@ -16,14 +16,16 @@ def handleMessage(message):
     receiver = redis_client.get(msg['friendHashID'])
 
     check_for_block = Block.query.filter_by(
-        hashId_blockee=msg['userHashID'], hashId_blocker=msg['friendHashID']).first()
+        blockee_hashID=msg['userHashID'], blocker_hashID=msg['friendHashID']).first()
     if check_for_block is None:
         if receiver is None:
-            pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config['MQ_URL']))
+            pika_client = pika.BlockingConnection(
+                pika.URLParameters(current_app.config['MQ_URL']))
             channel = pika_client.channel()
             queue_val = hash_func(msg['friendHashID'])
             # channel.queue_declare(queue=str(queue_val))
-            channel.basic_publish(exchange='', routing_key=str(queue_val), body=message)
+            channel.basic_publish(
+                exchange='', routing_key=str(queue_val), body=message)
             channel.close()
         else:
             receiver = receiver.decode('utf-8')
@@ -40,16 +42,19 @@ def unsent(messages):
             receiver = redis_client.get(msg['friendHashID']).decode('utf-8')
             emit('message', json_msg, room=receiver)
         else:
-            pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config['MQ_URL']))
+            pika_client = pika.BlockingConnection(
+                pika.URLParameters(current_app.config['MQ_URL']))
             channel = pika_client.channel()
             queue_val = hash_func(msg['friendHashID'])
             # channel.queue_declare(queue=str(queue_val))
-            channel.basic_publish(exchange='', routing_key=str(queue_val), body=json_msg)
+            channel.basic_publish(
+                exchange='', routing_key=str(queue_val), body=json_msg)
             channel.close()
         emit('receipt', msg['id'], room=request.sid)
+
 
 @socketio.on('friendTyping')
 def typingIndicator(typing_data):
     typing = json.loads(typing_data)
     receiver = redis_client.get(typing['friendHashID']).decode('utf-8')
-    emit('friendTyping',typing_data,room=receiver)
+    emit('friendTyping', typing_data, room=receiver)

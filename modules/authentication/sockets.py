@@ -1,7 +1,7 @@
 import json
 import time
 from flask import request, current_app, render_template
-from .utils import hash_func, get_confirm_token, convert_base64_to_url,face_verify
+from .utils import hash_func, get_confirm_token, convert_base64_to_url, face_verify
 from modules import db, mail, socketio, redis_client
 from modules.models import User
 from flask_mail import Message
@@ -24,8 +24,9 @@ def newUser(new_data):
     try:
         db.session.commit()
         msg = Message('Xeno', sender='support@getxeno.in',
-                  recipients=[data['email']])
-        msg.html = render_template('email.html', name=data['name'], url="https://xeno-website.herokuapp.com/"+get_confirm_token(data['hashID']))
+                      recipients=[data['email']])
+        msg.html = render_template(
+            'email.html', name=data['name'], url="https://xeno-website.herokuapp.com/"+get_confirm_token(data['hashID']))
         mail.send(msg)
         redis_client.set(request.sid, data['hashID'])
         redis_client.set(data['hashID'], request.sid)
@@ -36,9 +37,9 @@ def newUser(new_data):
         channel.queue_declare(queue=str(queue_val))
         channel.close()
         msg = {'id': int(time.time() * 1000), "userHashID": "42424242424242424242424242424242",
-                   "friendHashID": data['hashID'], "content": "Welcome To Xeno!"}
+               "friendHashID": data['hashID'], "content": "Welcome To Xeno!"}
         msg = json.dumps(msg)
-        emit('message',msg,room=request.sid)
+        emit('message', msg, room=request.sid)
     except:
         print("Error adding data to database")
         db.session.rollback()
@@ -61,16 +62,17 @@ def validateEmail(Email):
     else:
         emit('validateEmail', False)
 
+
 @socketio.on('isEmailVerified')
 def isEmailVerified(hashID):
     user = User.query.filter_by(hashID=hashID).first()
     if user.verified == True:
-        data = {'hashID':hashID}
+        data = {'hashID': hashID}
         data_json = json.dumps(data)
-        emit('emailVerified',data_json)
+        emit('emailVerified', data_json)
         message = "Your email has been verified successfully!"
         msg = {'id': int(time.time() * 1000), "userHashID": "42424242424242424242424242424242",
-                   "friendHashID": user.hashID, "content": message}
+               "friendHashID": user.hashID, "content": message}
         msg = json.dumps(msg)
         receiver = redis_client.get(user.hashID)
         if receiver is None:
@@ -78,19 +80,21 @@ def isEmailVerified(hashID):
                 pika.URLParameters(current_app.config['MQ_URL']))
             channel = pika_client.channel()
             queue_val = hash_func(user.hashID)
-            channel.basic_publish(exchange='', routing_key=str(queue_val), body=msg)
+            channel.basic_publish(
+                exchange='', routing_key=str(queue_val), body=msg)
             channel.close()
         else:
             receiver = receiver.decode('utf-8')
-            emit('message',msg, room=receiver)
+            emit('message', msg, room=receiver)
+
 
 @socketio.on('imageForVerification')
 def ImageVerification(data):
     image_data = json.loads(data)
     user = User.query.filter_by(hashID=image_data['hashID']).first()
-    face_verify_result = face_verify(user.imageUrl,image_data['base64'])
-    result = {'hashID':image_data['hashID'],'result':face_verify_result}
+    face_verify_result = face_verify(user.imageUrl, image_data['base64'])
+    result = {'hashID': image_data['hashID'], 'result': face_verify_result}
     result_json = json.dumps(result)
     receiver = redis_client.get(image_data['hashID'])
     receiver = receiver.decode('utf-8')
-    emit('picVerified',result_json,room=receiver)
+    emit('picVerified', result_json, room=receiver)

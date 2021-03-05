@@ -1,4 +1,4 @@
-from modules import redis_client,db
+from modules import redis_client, db
 import os
 from flask_socketio import SocketIO
 from modules.celery_worker import async_task
@@ -7,15 +7,14 @@ import time
 from modules.models import User, Block
 import json
 
-#socket = SocketIO(message_queue=current_app.config['SOCKETIO_URL'])
 
 def checkBlock(hash_user1, hash_user2):
     hash_user1 = hash_user1.decode('utf-8')
     hash_user2 = hash_user2.decode('utf-8')
     check_block = Block.query.filter_by(
-        hashId_blocker=hash_user1, hashId_blockee=hash_user2).first()
+        blocker_hashID=hash_user1, blockee_hashID=hash_user2).first()
     check_block = Block.query.filter_by(
-        hashId_blocker=hash_user2, hashId_blockee=hash_user1).first()
+        blocker_hashID=hash_user2, blockee_hashID=hash_user1).first()
     return check_block
 
 
@@ -48,10 +47,8 @@ def SeemaTaparia(socketio_url):
 
         while int(redis_client.get('match_queue_count').decode('utf-8')) > 1:
 
-            #task_id = Wait.request.id
-            #revoke(task_id, terminate=True)
+            if redis_client.ttl('matchqueue') != -1
             redis_client.persist('matchqueue')
-            #wait_result.wait(timeout=None,interval=0.5)
             time.sleep(1)
 
             hash_user1 = redis_client.lpop('matchqueue')
@@ -69,12 +66,6 @@ def SeemaTaparia(socketio_url):
                 break
 
             hash_user2 = redis_client.lpop('matchqueue')
-            #check_block = checkBlock(hash_user1,hash_user2)
-            """while check_block is not None:
-                redis_client.rpush('matchqueue',hash_user2)
-                hash_user2 = redis_client.lpop('matchqueue')
-                check_block = checkBlock(hash_user1,hash_user2)"""
-
             while redis_client.exists(hash_user2) != True:
                 if redis_client.exists('matchqueue') == False:
                     redis_client.rpush('matchqueue', hash_user1)
@@ -96,9 +87,6 @@ def SeemaTaparia(socketio_url):
 
             db.session.commit()
 
-        # redis_client.decrby('match_queue_count',2)
-
-            # with current_app.app_context():
             user1 = User.query.filter_by(hashID=hash_user1).first()
             user2 = User.query.filter_by(hashID=hash_user2).first()
 
@@ -107,9 +95,10 @@ def SeemaTaparia(socketio_url):
             user2_json = json.dumps({'name': user2.username, 'hashID': hash_user2, 'imageUrl': user2.imageUrl,
                                      'interests': [user2.interest_1, user2.interest_2, user2.interest_3, user2.interest_4, user2.interest_5]})
 
-        # json - dp url,name, hashid,interest list
-            socket.emit('xenoHashID', user1_json, room=redis_client.get(hash_user2).decode('utf-8'))
-            socket.emit('xenoHashID', user2_json, room=redis_client.get(hash_user1).decode('utf-8'))
+            socket.emit('xenoHashID', user1_json,
+                        room=redis_client.get(hash_user2).decode('utf-8'))
+            socket.emit('xenoHashID', user2_json,
+                        room=redis_client.get(hash_user1).decode('utf-8'))
 
             print('values emitted')
 

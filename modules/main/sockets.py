@@ -1,7 +1,7 @@
 from flask import request,current_app
 import json
 import pika
-from flask_socketio import emit,ConnectionRefusedError
+from flask_socketio import emit
 from modules import socketio,redis_client
 from .utils import hash_func
 

@@ -1,19 +1,23 @@
-from modules import socketio,db
+from modules import socketio, db
 from modules.models import Block
 import json
+
 
 @socketio.on('addBlock')
 def addBlock(block_json):
     print(block_json)
     block_dict = json.loads(block_json)
-    new_block = Block(hashId_blocker=block_dict['blocker'],hashId_blockee=block_dict['blockee'])
+    new_block = Block(
+        blocker_hashID=block_dict['blocker'], blockee_hashID=block_dict['blockee'])
     db.session.add(new_block)
     db.session.commit()
+
 
 @socketio.on('removeBlock')
 def removeBlock(block_json):
     print(block_json)
     block_dict = json.loads(block_json)
-    rem_block = Block.query.filter_by(hashId_blocker=block_dict['blocker'],hashId_blockee=block_dict['blockee']).first()
+    rem_block = Block.query.filter_by(
+        blocker_hashID=block_dict['blocker'], blockee_hashID=block_dict['blockee']).first()
     db.session.delete(rem_block)
     db.session.commit()
