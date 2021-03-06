@@ -8,7 +8,8 @@ def addBlock(block_json):
     print(block_json)
     block_dict = json.loads(block_json)
     new_block = Block(
-        blocker_hashID=block_dict['blocker'], blockee_hashID=block_dict['blockee'])
+        blocker_hashID=block_dict['blocker'],
+        blockee_hashID=block_dict['blockee'])
     db.session.add(new_block)
     db.session.commit()
     user = User.query.filter_by(hashID=block_dict['blocker']).first()
@@ -20,6 +21,7 @@ def removeBlock(block_json):
     print(block_json)
     block_dict = json.loads(block_json)
     rem_block = Block.query.filter_by(
-        blocker_hashID=block_dict['blocker'], blockee_hashID=block_dict['blockee']).first()
+        blocker_hashID=block_dict['blocker'],
+        blockee_hashID=block_dict['blockee']).first()
     db.session.delete(rem_block)
     db.session.commit()

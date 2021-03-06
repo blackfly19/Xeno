@@ -1,6 +1,5 @@
 from modules import socketio, redis_client
 from flask import request
-from modules.models import User
 from flask_socketio import emit
 import json
 import time
@@ -16,8 +15,6 @@ def match(Hash):
 @socketio.on('xenoMessage')
 def xenoMessage(message):
     msg = json.loads(message)
-    print(message)
-    # print(redis_client.get(msg['friendHashID']))
     receiver = redis_client.get(msg['friendHashID'])
     receiver = receiver.decode('utf-8')
     emit('xenoReceipt', msg['id'], room=request.sid)
@@ -26,7 +23,6 @@ def xenoMessage(message):
 
 @socketio.on('addOwnFirst')
 def firstTimer(timer_data):
-    print('First timer')
     data = json.loads(timer_data)
     receiver = redis_client.get(data['friendHashID'])
     receiver = receiver.decode('utf-8')
@@ -34,8 +30,7 @@ def firstTimer(timer_data):
 
 
 @socketio.on('addOwnSecond')
-def firstTimer(timer_data):
-    print('Second timer')
+def SecondTimer(timer_data):
     data = json.loads(timer_data)
     receiver = redis_client.get(data['friendHashID'])
     receiver = receiver.decode('utf-8')
@@ -44,26 +39,21 @@ def firstTimer(timer_data):
 
 @socketio.on('revealConsent')
 def consent(data):
-    print('RevealConsent')
     json_data = json.loads(data)
     Hash = json_data['friendHashID']
     receiver = redis_client.get(Hash)
-    print(receiver)
     receiver = receiver.decode('utf-8')
     emit('revealConsent', data, room=receiver)
 
 
 @socketio.on('revealFinal')
 def final(data):
-    print('RevealFinal')
     json_data = json.loads(data)
     user_receiver = redis_client.get(json_data['userHashID'])
     friend_receiver = redis_client.get(json_data['friendHashID'])
     user_receiver = user_receiver.decode('utf-8')
     friend_receiver = friend_receiver.decode('utf-8')
-    print(user_receiver)
-    print(friend_receiver)
-    if json_data['ownConsent'] == True and json_data['xenoConsent'] == True:
+    if json_data['ownConsent'] is True and json_data['xenoConsent'] is True:
         emit('revealFinal', True, room=user_receiver)
         emit('revealFinal', True, room=friend_receiver)
     else:

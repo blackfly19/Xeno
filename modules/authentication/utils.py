@@ -8,6 +8,7 @@ from PIL import Image
 import os
 import io
 import base64
+import io
 
 
 def hash_func(s):
@@ -33,27 +34,29 @@ def convert_base64_to_url(encoded_img, imageFileName):
     cloudinary.config(cloud_name=current_app.config['CLOUDINARY_CLOUD_NAME'],
                       api_key=current_app.config['CLOUDINARY_API_KEY'],
                       api_secret=current_app.config['CLOUDINARY_API_SECRET'])
-    image_details = Uploader.upload(in_mem, public_id=imageFileName, invalidate=True)
+    image_details = Uploader.upload(
+        in_mem, public_id=imageFileName, invalidate=True)
     return image_details['url']
 
-def face_verify(image_url,encoded_img):
+
+def face_verify(image_url, encoded_img):
     KEY = '119eb67123d04e2b9240d563e8d3e241'
     ENDPOINT = 'https://xeno-faceapi.cognitiveservices.azure.com/'
 
-    in_mem = base64.b64decode(encoded_img)
-    #img = Image.open(in_mem)
-    #img.save(in_mem,format='JPEG')
-    #in_mem.seek(0)
-    
-    face_client = FaceClient(ENDPOINT, CognitiveServicesCredentials(KEY))
-    display_pic = face_client.face.detect_with_url(url=image_url, detection_model='detection_02')
-    camera_pic = face_client.face.detect_with_stream(in_mem,detection_model='detection_02')
+    in_mem = io.BytesIO(base64.b64decode(encoded_img)
+    # img = Image.open(in_mem)
+    # img.save(in_mem,format='JPEG')
+    # in_mem.seek(0)
+
+    face_client=FaceClient(ENDPOINT, CognitiveServicesCredentials(KEY))
+    display_pic=face_client.face.detect_with_url(
+        url=image_url, detection_model='detection_02')
+    camera_pic=face_client.face.detect_with_stream(
+        in_mem, detection_model='detection_02')
     print(camera_pic[0])
     print(display_pic[0])
 
-    verify_result = face_client.face.verify_face_to_face(display_pic[0].face_id,camera_pic[0].face_id)
-    print(verify_result.is_identical,verify_result.confidence)
+    verify_result=face_client.face.verify_face_to_face(
+        display_pic[0].face_id, camera_pic[0].face_id)
+    print(verify_result.is_identical, verify_result.confidence)
     return verify_result.is_identical
-    
-
-
