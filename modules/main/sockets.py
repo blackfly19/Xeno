@@ -1,53 +1,58 @@
-from flask import request,current_app
+from flask import request, current_app
 import json
 import pika
 from flask_socketio import emit
-from modules import socketio,redis_client
-from .utils import hash_func
+from modules import socketio, redis_client
+from modules.global_utils import hash_func
+
 
 @socketio.on('connect')
 def connect():
     if request.args.get('api_key') != current_app.config['CONNECT_API_KEY']:
         return False
     sid = request.sid
-    print("Connected: ",sid)
-    emit('authorize',1,room=sid)
+    print("Connected: ", sid)
+    emit('authorize', 1, room=sid)
+
 
 @socketio.on('disconnect')
 def disconnect():
-    print("Disconnected: ",request.sid)
+    print("Disconnected: ", request.sid)
     if redis_client.exists(request.sid):
         user_hash = redis_client.get(request.sid)
         redis_client.delete(request.sid)
         redis_client.delete(user_hash)
 
+
 @socketio.on('mapHashID')
 def mapHashID(Hash):
 
-    print("Hash: ",Hash)
-    print("Sid: ",request.sid)
+    print("Hash: ", Hash)
+    print("Sid: ", request.sid)
     if Hash != None:
-        pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config['MQ_URL']))
+        pika_client = pika.BlockingConnection(
+            pika.URLParameters(current_app.config['MQ_URL']))
         channel = pika_client.channel()
 
         if redis_client.exists(Hash):
             redis_client.delete(redis_client.get(Hash))
-        redis_client.set(request.sid,Hash)
-        redis_client.set(Hash,request.sid)
+        redis_client.set(request.sid, Hash)
+        redis_client.set(Hash, request.sid)
 
-        if redis_client.hexists('NameChange',Hash):
-            name_email = redis_client.hget('NameChange',Hash).decode('utf-8')
+        if redis_client.hexists('NameChange', Hash):
+            name_email = redis_client.hget('NameChange', Hash).decode('utf-8')
             name_email = name_email.split(' ')
-            name_json = json.dumps({'hashID':Hash,'newName':name_email[1],'email':name_email[0]})
-            emit('nameChange',name_json,room=request.sid)
-            redis_client.hdel('NameChange',Hash)
+            name_json = json.dumps(
+                {'hashID': Hash, 'newName': name_email[1], 'email': name_email[0]})
+            emit('nameChange', name_json, room=request.sid)
+            redis_client.hdel('NameChange', Hash)
 
         queue_val = hash_func(Hash)
         all_msgs = []
-        val = channel.queue_declare(queue=str(queue_val),passive=True)
+        val = channel.queue_declare(queue=str(queue_val), passive=True)
         num_msgs = val.method.message_count
         if num_msgs != 0:
-            for method_frame,_,body in channel.consume(str(queue_val)):
+            for method_frame, _, body in channel.consume(str(queue_val)):
                 body = body.decode('utf-8')
                 user_msg = json.loads(body)
                 if user_msg['friendHashID'] == Hash:
@@ -58,8 +63,6 @@ def mapHashID(Hash):
                 if num_msgs == 0:
                     break
             all_msgs = json.dumps(all_msgs)
-            emit('unread',all_msgs,room=request.sid)
+            emit('unread', all_msgs, room=request.sid)
             print(all_msgs)
         channel.close()
-    
-

@@ -1,9 +1,10 @@
 import json
 import time
 from flask import request, current_app, render_template
-from .utils import hash_func, get_confirm_token, convert_base64_to_url, face_verify
+from .utils import get_confirm_token, convert_base64_to_url, face_verify
 from modules import db, mail, socketio, redis_client
 from modules.models import User
+from modules.global_utils import hash_func
 from flask_mail import Message
 from flask_socketio import emit
 import pika
@@ -17,8 +18,10 @@ def newUser(new_data):
     new_user = User(hashID=data['hashID'], username=data['name'],
                     email=data['email'], notif_token=data['token'],
                     phone=data['phone'], verified=False, imageUrl=url,
-                    interest_1=data['interests'][0], interest_2=data['interests'][1],
-                    interest_3=data['interests'][2], interest_4=data['interests'][3],
+                    interest_1=data['interests'][0],
+                    interest_2=data['interests'][1],
+                    interest_3=data['interests'][2],
+                    interest_4=data['interests'][3],
                     interest_5=data['interests'][4])
     db.session.add(new_user)
     try:

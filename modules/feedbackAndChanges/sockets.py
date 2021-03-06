@@ -8,16 +8,23 @@ import io
 @socketio.on('submitFeedback')
 def feedback(feedback_json):
     data = json.loads(feedback_json)
-    msg = Message('Feedback', sender='support@getxeno.in', recipients=['support@getxeno.in'])
-    msg.body = 'Email: '+data['email'] + '\n\nFeedback: ' + data['content'] + '\n\nDevice: ' + data['device'] + '\nOS: ' + data['os'] + '\nApp Version: ' + data['appV']
+    msg = Message('Feedback', sender='support@getxeno.in',
+                  recipients=['support@getxeno.in'])
+    msg.body = 'Email: '+data['email'] + '\n\nFeedback: ' + data['content'] + \
+        '\n\nDevice: ' + data['device'] + '\nOS: ' + \
+        data['os'] + '\nApp Version: ' + data['appV']
     mail.send(msg)
+
 
 @socketio.on('nameChange')
 def nameChange(name_json):
     data = json.loads(name_json)
-    msg = Message('Name Change Request', sender='support@getxeno.in', recipients=['support@getxeno.in'])
-    msg.body = 'Email: '+data['email']+'\nCurrent Name: '+data['currentName']+'\nNew Name: '+data['newName']
+    msg = Message('Name Change Request', sender='support@getxeno.in',
+                  recipients=['support@getxeno.in'])
+    msg.body = 'Email: '+data['email']+'\nCurrent Name: ' + \
+        data['currentName']+'\nNew Name: '+data['newName']
     mail.send(msg)
+
 
 @socketio.on('newInterests')
 def interestChange(newInterests):
@@ -37,6 +44,7 @@ def interestChange(newInterests):
     db.session.commit()
     print("Interests Changed")
 
+
 @socketio.on('reportFriend')
 def reportFriend(data_json):
     data = json.loads(data_json)
@@ -50,8 +58,11 @@ def reportFriend(data_json):
         chats.append(json.dumps(i))
     chat_data = io.StringIO('\n'.join(chats))
     fileName = reported.email + '_' + reporter.email+'_.json'
-    
-    msg = Message('Report', sender='support@getxeno.in', recipients=['support@getxeno.in'])
-    msg.attach(fileName,"application/json",chat_data.read())
-    msg.body = 'Reported HashID: '+reported_hashid+"\nReported Email: "+reported.email+'\n\nReporter HashID: '+reporter_hashid+"\nReporter Email: "+reporter.email+ '\n\nReport: ' + data['content']
+
+    msg = Message('Report', sender='support@getxeno.in',
+                  recipients=['support@getxeno.in'])
+    msg.attach(fileName, "application/json", chat_data.read())
+    msg.body = 'Reported HashID: '+reported_hashid+"\nReported Email: "+reported.email+'\n\nReporter HashID: ' + \
+        reporter_hashid+"\nReporter Email: " + \
+        reporter.email + '\n\nReport: ' + data['content']
     mail.send(msg)

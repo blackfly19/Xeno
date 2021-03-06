@@ -1,8 +1,6 @@
 from modules import redis_client, db
-import os
 from flask_socketio import SocketIO
 from modules.celery_worker import async_task
-from flask import request, current_app
 import time
 from modules.models import User, Block
 import json
@@ -26,7 +24,7 @@ def Wait(socketio_url):
     Hash = Hash.decode('utf-8')
     while redis_client.ttl('matchqueue') != -1 and redis_client.ttl('matchqueue') != -2:
         continue
-    #print("out of while")
+    print("out of while")
     print(redis_client.ttl('matchqueue'))
 
     if redis_client.ttl('matchqueue') == -2:

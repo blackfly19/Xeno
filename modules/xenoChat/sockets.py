@@ -1,8 +1,9 @@
-from modules import socketio, redis_client
+from modules import socketio, redis_client, db
 from flask import request
 from flask_socketio import emit
 import json
 import time
+from modules.models import FriendList
 
 
 @socketio.on('matchQueue')
@@ -54,6 +55,13 @@ def final(data):
     user_receiver = user_receiver.decode('utf-8')
     friend_receiver = friend_receiver.decode('utf-8')
     if json_data['ownConsent'] is True and json_data['xenoConsent'] is True:
+        user_friend = FriendList(user_hashID=json_data['userHashID'],
+                                 friend_hashID=json_data['friendHashID'])
+        friend_user = FriendList(user_hashID=json_data['friendHashID'],
+                                 friend_hashID=json_data['userHashID'])
+        db.session.add(user_friend)
+        db.session.add(friend_user)
+        db.session.commit()
         emit('revealFinal', True, room=user_receiver)
         emit('revealFinal', True, room=friend_receiver)
     else:

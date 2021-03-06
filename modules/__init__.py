@@ -1,13 +1,9 @@
-from flask import Flask,current_app
+from flask import Flask
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
-from modules.config import ProductionConfig
 from flask_marshmallow import Marshmallow
-from celery import Celery
-import time
 from flask_redis import FlaskRedis
-import pika
 import os
 
 socketio = SocketIO()
@@ -30,10 +26,12 @@ def create_app(config_class):
 
     mail.init_app(app)
     ma.init_app(app)
-    socketio.init_app(app,cors_allowed_origins="*",message_queue=app.config['SOCKETIO_URL'],async_mode='eventlet')
+    socketio.init_app(app, cors_allowed_origins="*",
+                      message_queue=app.config['SOCKETIO_URL'],
+                      async_mode='eventlet')
     redis_client.init_app(app)
 
-    redis_client.set('match_queue_count',0)
+    redis_client.set('match_queue_count', 0)
 
     from modules.main import main
     from modules.authentication import authentication
