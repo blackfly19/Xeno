@@ -39,11 +39,13 @@ def newUser(new_data):
         queue_val = hash_func(data['hashID'])
         channel.queue_declare(queue=str(queue_val))
         channel.close()
-        msg = {'id': int(time.time() * 1000), "userHashID": "42424242424242424242424242424242",
+        msg = {'id': int(time.time() * 1000), 'type': 'message',
+               "userHashID": "42424242424242424242424242424242",
                "friendHashID": data['hashID'], "content": "Welcome To Xeno!"}
         msg = json.dumps(msg)
         emit('message', msg, room=request.sid)
-    except:
+    except Exception as e:
+        print(e)
         print("Error adding data to database")
         db.session.rollback()
 
