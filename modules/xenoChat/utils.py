@@ -4,6 +4,7 @@ from modules.celery_worker import async_task
 import time
 from modules.models import User, Block
 import json
+import socketio
 
 
 def checkBlock(hash_user1, hash_user2):
@@ -102,7 +103,8 @@ def SeemaTaparia(socketio_url):
 
 
 @async_task.task()
-def keep_redis_alive():
+def keep_server_alive():
     while 1:
-        redis_client.ping()
-        time.sleep(30)
+        sio = socketio.Client()
+        sio.connect('https://xeno-1.herokuapp.com')
+        time.sleep(300)

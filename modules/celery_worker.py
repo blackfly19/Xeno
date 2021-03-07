@@ -1,9 +1,11 @@
-from modules import create_app,redis_client
+from modules.xenoChat.utils import SeemaTaparia, keep_server_alive
+from modules import create_app, redis_client
 from celery import Celery
 from flask import current_app
-from modules.config import ProductionConfig,DevelopmentConfig
+from modules.config import ProductionConfig, DevelopmentConfig
 import time
 import os
+
 
 def make_celery(app):
     celery = Celery(
@@ -20,6 +22,7 @@ def make_celery(app):
     celery.Task = ContextTask
     return celery
 
+
 celery_app = None
 if os.environ.get('FLASK_ENV') == 'production':
     celery_app = create_app(ProductionConfig())
@@ -30,5 +33,5 @@ else:
     print("Celery in development config")
 
 async_task = make_celery(celery_app)
-from modules.xenoChat.utils import SeemaTaparia
 SeemaTaparia.delay(celery_app.config['SOCKETIO_URL'])
+keep_server_alive()
