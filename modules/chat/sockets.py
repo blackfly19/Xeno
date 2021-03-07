@@ -1,5 +1,5 @@
 from modules import socketio, redis_client
-from global_utils import messageHandler
+from modules.global_utils import messageHandler
 from flask_socketio import emit
 import json
 
