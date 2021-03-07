@@ -5,6 +5,7 @@ import time
 from modules.models import User, Block
 import json
 import socketio
+import os
 
 
 def checkBlock(hash_user1, hash_user2):
@@ -106,6 +107,6 @@ def SeemaTaparia(socketio_url):
 def keep_server_alive():
     while 1:
         sio = socketio.Client()
-        sio.connect('https://xeno-1.herokuapp.com')
+        sio.connect('https://xeno-1.herokuapp.com?api_key='+os.environ.get('CONNECT_API_KEY'))
         sio.disconnect()
         time.sleep(300)
