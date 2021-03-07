@@ -107,4 +107,5 @@ def keep_server_alive():
     while 1:
         sio = socketio.Client()
         sio.connect('https://xeno-1.herokuapp.com')
+        sio.disconnect()
         time.sleep(300)
