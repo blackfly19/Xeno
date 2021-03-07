@@ -20,5 +20,7 @@ def unsent(messages):
 @socketio.on('friendTyping')
 def typingIndicator(typing_data):
     typing = json.loads(typing_data)
-    receiver = redis_client.get(typing['friendHashID']).decode('utf-8')
-    emit('friendTyping', typing_data, room=receiver)
+    receiver = redis_client.get(typing['friendHashID'])
+    if receiver is not None:
+        receiver = receiver.decode('utf-8')
+        emit('friendTyping', typing_data, room=receiver)

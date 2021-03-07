@@ -29,7 +29,7 @@ def mapHashID(Hash):
 
     print("Hash: ", Hash)
     print("Sid: ", request.sid)
-    if Hash != None:
+    if Hash is not None:
         pika_client = pika.BlockingConnection(
             pika.URLParameters(current_app.config['MQ_URL']))
         channel = pika_client.channel()
@@ -55,9 +55,13 @@ def mapHashID(Hash):
             for method_frame, _, body in channel.consume(str(queue_val)):
                 body = body.decode('utf-8')
                 user_msg = json.loads(body)
-                if user_msg['friendHashID'] == Hash:
-                    all_msgs.append(user_msg)
+                if user_msg['type'] == 'nameChange':
+                    emit('friendNameChange', body, room=request.sid)
                     channel.basic_ack(method_frame.delivery_tag)
+                elif user_msg['type'] == 'message':
+                    if user_msg['friendHashID'] == Hash:
+                        all_msgs.append(user_msg)
+                        channel.basic_ack(method_frame.delivery_tag)
                 num_msgs = num_msgs - 1
 
                 if num_msgs == 0:
