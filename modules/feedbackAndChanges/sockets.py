@@ -31,7 +31,7 @@ def nameChange(name_json):
 def dpChange(data):
     image_data = json.loads(data)
     user = User.query.filter_by(hashID=image_data['hashID']).first()
-    url = convert_base64_to_url(data['base64'], data['hashID'])
+    url = convert_base64_to_url(image_data['base64'], image_data['hashID'])
     User.imageUrl = url
     db.session.commit()
     msg = {'type': 'picChanged',
