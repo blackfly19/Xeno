@@ -50,6 +50,21 @@ def newUser(new_data):
         db.session.rollback()
 
 
+@socketio.on('deleteUser')
+def deleteUser(delete_json):
+    data = json.loads(delete_json)
+    user = User.query.filter_by(email=data['email'])
+    db.session.delete(user)
+    db.session.commit()
+    msg = Message('Delete', sender='support@getxeno.in',
+                  recipients=['support@getxeno.in'])
+    msg.body = 'Email: '+data['email'] + '\n\nReason: ' + data['content'] + \
+        '\n\nDevice: ' + data['device'] + '\nOS: ' + \
+        data['os'] + '\nApp Version: ' + data['appV']
+    mail.send(msg)
+
+
+
 @socketio.on('validatePhone')
 def validatePhone(Phone):
     user = User.query.filter_by(phone=Phone).first()
