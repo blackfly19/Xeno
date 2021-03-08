@@ -70,6 +70,7 @@ def validateEmail(Email):
 
 @socketio.on('isEmailVerified')
 def isEmailVerified(hashID):
+    db.session.commit()
     user = User.query.filter_by(hashID=hashID).first()
     if user.verified is True:
         data = {'hashID': hashID}

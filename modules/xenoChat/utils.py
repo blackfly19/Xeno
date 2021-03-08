@@ -107,6 +107,6 @@ def SeemaTaparia(socketio_url):
 def keep_server_alive():
     sio = socketio.Client()
     while 1:
+        time.sleep(300)
         sio.connect('https://xeno-1.herokuapp.com?api_key='+os.environ.get('CONNECT_API_KEY'))
         sio.disconnect()
-        time.sleep(300)
