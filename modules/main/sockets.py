@@ -1,4 +1,4 @@
-from flask import request, current_app
+from flask import request, current_app,request
 import json
 import pika
 from flask_socketio import emit
@@ -11,6 +11,7 @@ def connect():
     if request.args.get('api_key') != current_app.config['CONNECT_API_KEY']:
         return False
     sid = request.sid
+    redis_client.incr('connected_clients')
     print("Connected: ", sid)
     emit('authorize', 1, room=sid)
 
@@ -18,10 +19,17 @@ def connect():
 @socketio.on('disconnect')
 def disconnect():
     print("Disconnected: ", request.sid)
+    redis_client.decr('connected_clients')
     if redis_client.exists(request.sid):
         user_hash = redis_client.get(request.sid)
         redis_client.delete(request.sid)
         redis_client.delete(user_hash)
+
+
+@socketio.on('onlineUsers')
+def onlineUsers():
+    clients = redis_client.get('connected_clients').decode('utf-8')
+    emit('onlineUsers', clients, room=request.sid)
 
 
 @socketio.on('mapHashID')

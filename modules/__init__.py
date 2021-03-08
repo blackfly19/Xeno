@@ -32,6 +32,7 @@ def create_app(config_class):
     redis_client.init_app(app)
 
     redis_client.set('match_queue_count', 0)
+    redis_client.set('connected_clients', 0)
 
     from modules.main import main
     from modules.authentication import authentication
