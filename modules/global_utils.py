@@ -1,5 +1,5 @@
 import json
-from flask import current_app, request
+from flask import current_app
 from flask_socketio import emit
 from modules import redis_client
 from modules.models import Block
@@ -30,6 +30,7 @@ def messageHandler(message_json, message=None):
         msg = json.loads(message_json)
 
     receiver = redis_client.get(msg['friendHashID'])
+    sender = redis_client.get(msg['userHashID']).decode('utf-8')
 
     if msg['type'] != 'message':
         check_for_block = None
@@ -51,8 +52,8 @@ def messageHandler(message_json, message=None):
             receiver = receiver.decode('utf-8')
             emit(msg['type'], message_json, room=receiver)
 
-    if msg['type'] == 'message':
-        emit('receipt', msg['id'], room=request.sid)
+        if msg['type'] == 'message':
+            emit('receipt', msg['id'], room=sender)
     return receiver
 
 
