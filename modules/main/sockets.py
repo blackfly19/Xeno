@@ -43,7 +43,8 @@ def mapHashID(Hash):
             name_email = redis_client.hget('NameChange', Hash).decode('utf-8')
             name_email = name_email.split(' ')
             name_json = json.dumps(
-                {'hashID': Hash, 'newName': name_email[1], 'email': name_email[0]})
+                {'hashID': Hash, 'newName': name_email[1],
+                 'email': name_email[0]})
             emit('nameChange', name_json, room=request.sid)
             redis_client.hdel('NameChange', Hash)
 
@@ -55,18 +56,19 @@ def mapHashID(Hash):
             for method_frame, _, body in channel.consume(str(queue_val)):
                 body = body.decode('utf-8')
                 user_msg = json.loads(body)
-                if user_msg['type'] == 'nameChange':
-                    emit('friendNameChange', body, room=request.sid)
-                    channel.basic_ack(method_frame.delivery_tag)
-                elif user_msg['type'] == 'message':
-                    if user_msg['friendHashID'] == Hash:
+                if user_msg['friendHashID'] == Hash:
+                    if user_msg['type'] != 'message':
+                        emit(user_msg['type'], body, room=request.sid)
+                    else:
                         all_msgs.append(user_msg)
-                        channel.basic_ack(method_frame.delivery_tag)
+                    channel.basic_ack(method_frame.delivery_tag)
                 num_msgs = num_msgs - 1
 
                 if num_msgs == 0:
                     break
-            all_msgs = json.dumps(all_msgs)
-            emit('unread', all_msgs, room=request.sid)
-            print(all_msgs)
+
+            if len(all_msgs) != 0:
+                all_msgs = json.dumps(all_msgs)
+                emit('unread', all_msgs, room=request.sid)
+                print(all_msgs)
         channel.close()

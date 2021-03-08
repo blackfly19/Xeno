@@ -1,6 +1,7 @@
 from modules import mail, socketio, db
 from modules.models import User
 from flask_mail import Message
+from modules.global_utils import messageHandler, convert_base64_to_url
 import json
 import io
 
@@ -24,6 +25,20 @@ def nameChange(name_json):
     msg.body = 'Email: '+data['email']+'\nCurrent Name: ' + \
         data['currentName']+'\nNew Name: '+data['newName']
     mail.send(msg)
+
+
+@socketio.on('dpChange')
+def dpChange(data):
+    image_data = json.loads(data)
+    user = User.query.filter_by(hashID=image_data['hashID']).first()
+    url = convert_base64_to_url(data['base64'], data['hashID'])
+    User.imageUrl = url
+    db.session.commit()
+    msg = {'type': 'picChanged',
+           "userHashID": "42424242424242424242424242424242",
+           "friendHashID": user.hashID, "content": url}
+    json_msg = json.dumps(msg)
+    messageHandler(message_json=json_msg, message=msg)
 
 
 @socketio.on('newInterests')

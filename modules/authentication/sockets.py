@@ -1,10 +1,10 @@
 import json
 import time
 from flask import request, current_app, render_template
-from .utils import get_confirm_token, convert_base64_to_url, face_verify
+from .utils import get_confirm_token
 from modules import db, mail, socketio, redis_client
 from modules.models import User
-from modules.global_utils import hash_func
+from modules.global_utils import hash_func, messageHandler, face_verify, convert_base64_to_url
 from flask_mail import Message
 from flask_socketio import emit
 import pika
@@ -76,21 +76,11 @@ def isEmailVerified(hashID):
         data_json = json.dumps(data)
         emit('emailVerified', data_json)
         message = "Your email has been verified successfully!"
-        msg = {'id': int(time.time() * 1000), "userHashID": "42424242424242424242424242424242",
+        msg = {'id': int(time.time() * 1000), 'type': 'message',
+               "userHashID": "42424242424242424242424242424242",
                "friendHashID": user.hashID, "content": message}
-        msg = json.dumps(msg)
-        receiver = redis_client.get(user.hashID)
-        if receiver is None:
-            pika_client = pika.BlockingConnection(
-                pika.URLParameters(current_app.config['MQ_URL']))
-            channel = pika_client.channel()
-            queue_val = hash_func(user.hashID)
-            channel.basic_publish(
-                exchange='', routing_key=str(queue_val), body=msg)
-            channel.close()
-        else:
-            receiver = receiver.decode('utf-8')
-            emit('message', msg, room=receiver)
+        json_msg = json.dumps(msg)
+        messageHandler(message_json=json_msg, message=msg)
 
 
 @socketio.on('imageForVerification')
@@ -98,8 +88,18 @@ def ImageVerification(data):
     image_data = json.loads(data)
     user = User.query.filter_by(hashID=image_data['hashID']).first()
     face_verify_result = face_verify(user.imageUrl, image_data['base64'])
-    result = {'hashID': image_data['hashID'], 'result': face_verify_result}
+    result = {'type': 'picVerified',
+              "userHashID": "42424242424242424242424242424242",
+              'friendHashID': image_data['hashID'],
+              'content': face_verify_result}
     result_json = json.dumps(result)
-    receiver = redis_client.get(image_data['hashID'])
-    receiver = receiver.decode('utf-8')
-    emit('picVerified', result_json, room=receiver)
+    if face_verify_result is True:
+        message = "Your image has been verified"
+    else:
+        message = "Your image didn't match. Please try again"
+    msg = {'id': int(time.time() * 1000), 'type': 'message',
+           "userHashID": "42424242424242424242424242424242",
+           "friendHashID": user.hashID, "content": message}
+    json_msg = json.dumps(msg)
+    messageHandler(message_json=json_msg, message=msg)
+    messageHandler(message_json=result_json, message=result)

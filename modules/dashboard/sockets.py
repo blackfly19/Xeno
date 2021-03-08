@@ -60,7 +60,7 @@ def nameChangeAccepted(name_json):
     db.session.commit()
 
     for friend in user_obj.friends:
-        friend_msg = {'type': 'nameChange',
+        friend_msg = {'type': 'friendNameChange',
                       "userHashID": user_obj.hashID,
                       "friendHashID": friend.friend_hashID,
                       "content": data['newName']}
