@@ -31,7 +31,7 @@ def messageHandler(message_json, message=None):
 
     receiver = redis_client.get(msg['friendHashID'])
 
-    if msg['type'] == 'nameChange' or msg['type'] == 'dpChange':
+    if msg['type'] != 'message':
         check_for_block = None
     else:
         check_for_block = Block.query.filter_by(
@@ -50,10 +50,9 @@ def messageHandler(message_json, message=None):
         else:
             receiver = receiver.decode('utf-8')
             emit(msg['type'], message_json, room=receiver)
-    try:
+
+    if msg['type'] == 'message':
         emit('receipt', msg['id'], room=request.sid)
-    except Exception:
-        print("NameChange or DpChangeToFriends")
     return receiver
 
 
