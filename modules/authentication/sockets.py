@@ -70,12 +70,12 @@ def validateEmail(Email):
 
 @socketio.on('isEmailVerified')
 def isEmailVerified(hashID):
-    db.session.commit()
     user = User.query.filter_by(hashID=hashID).first()
     if user.verified is True:
         data = {'hashID': hashID}
         data_json = json.dumps(data)
-        emit('emailVerified', data_json)
+        receiver = redis_client.get(hashID).decode('utf-8')
+        emit('emailVerified', data_json,room=receiver)
         message = "Your email has been verified successfully!"
         msg = {'id': int(time.time() * 1000), 'type': 'message',
                "userHashID": "42424242424242424242424242424242",
