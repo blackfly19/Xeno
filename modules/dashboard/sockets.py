@@ -60,8 +60,8 @@ successfully. Your new name {}.".format(data['newName'])
     friend_message = "Your friend {} has changed their\
 name to {}".format(oldName, data['newName'])
     for friend in user_obj.friends:
-        friend_msg = {'type': 'message',
-                      "userHashID": user_obj.hashID,
+        friend_msg = {'id': int(time.time() * 1000), 'type': 'message',
+                      "userHashID": "42424242424242424242424242424242",
                       "friendHashID": friend.friend_hashID,
                       "content": friend_message}
         friend_nameChange_msg = {'type': 'friendNameChange',
