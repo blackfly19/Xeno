@@ -62,11 +62,11 @@ def nameChangeAccepted(name_json):
     for friend in user_obj.friends:
         friend_msg = {'type': 'message',
                       "userHashID": user_obj.hashID,
-                      "friendHashID": friend.hashID,
+                      "friendHashID": friend.friend_hashID,
                       "content": friend_message}
         friend_nameChange_msg = {'type': 'friendNameChange',
                                  "userHashID": user_obj.hashID,
-                                 "friendHashID": friend.hashID,
+                                 "friendHashID": friend.friend_hashID,
                                  "content": data['newName']}
         friend_nameChange_msg_json = json.dumps(friend_nameChange_msg)
         friend_msg_json = json.dumps(friend_msg)

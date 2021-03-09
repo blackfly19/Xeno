@@ -43,7 +43,7 @@ def dpChange(data):
     for friend in user.friends:
         friend_msg = {'type': 'friendDpChange',
                       "userHashID": user.hashID,
-                      "friendHashID": friend.hashID,
+                      "friendHashID": friend.friend_hashID,
                       "content": url}
         friend_msg_json = json.dumps(friend_msg)
         messageHandler(message_json=friend_msg_json, message=friend_msg)
