@@ -29,16 +29,9 @@ def newUser(new_data):
         msg = Message('Xeno', sender='support@getxeno.in',
                       recipients=[data['email']])
         msg.html = render_template(
-            'email.html', name=data['name'], url="https://xeno-website.herokuapp.com/"+get_confirm_token(data['hashID']))
+            'email.html', name=data['name'],
+            url="https://www.getxeno.in/"+get_confirm_token(data['hashID']))
         mail.send(msg)
-        redis_client.set(request.sid, data['hashID'])
-        redis_client.set(data['hashID'], request.sid)
-        pika_client = pika.BlockingConnection(
-            pika.URLParameters(current_app.config['MQ_URL']))
-        channel = pika_client.channel()
-        queue_val = hash_func(data['hashID'])
-        channel.queue_declare(queue=str(queue_val))
-        channel.close()
         msg = {'id': int(time.time() * 1000), 'type': 'message',
                "userHashID": "42424242424242424242424242424242",
                "friendHashID": data['hashID'], "content": "Welcome To Xeno!"}
@@ -48,6 +41,13 @@ def newUser(new_data):
         print(e)
         print("Error adding data to database")
         db.session.rollback()
+    redis_client.set(request.sid, data['hashID'])
+    redis_client.set(data['hashID'], request.sid)
+    pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config['MQ_URL']))
+    channel = pika_client.channel()
+    queue_val = hash_func(data['hashID'])
+    channel.queue_declare(queue=str(queue_val))
+    channel.close()
 
 
 @socketio.on('deleteUser')
