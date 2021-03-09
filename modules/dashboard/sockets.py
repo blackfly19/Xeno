@@ -39,7 +39,7 @@ def broadcast(message):
 def nameChangeAccepted(name_json):
     data = json.loads(name_json)
     message = "Your request for name change has been processed\
-    successfully. Your new name {}.".format(data['newName'])
+successfully. Your new name {}.".format(data['newName'])
     user_obj = User.query.filter_by(email=data['email']).first()
     oldName = user_obj.username
     msg = {'id': int(time.time() * 1000), 'type': 'message',
@@ -57,8 +57,8 @@ def nameChangeAccepted(name_json):
         emit('nameChange', name_json, room=receiver)
     db.session.commit()
 
-    friend_message = "Your friend {} has changed his\
-    name to {}".format(oldName, data['newName'])
+    friend_message = "Your friend {} has changed their\
+name to {}".format(oldName, data['newName'])
     for friend in user_obj.friends:
         friend_msg = {'type': 'message',
                       "userHashID": user_obj.hashID,
