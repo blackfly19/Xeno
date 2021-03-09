@@ -40,6 +40,14 @@ def dpChange(data):
     json_msg = json.dumps(msg)
     messageHandler(message_json=json_msg, message=msg)
 
+    for friend in user.friends:
+        friend_msg = {'type': 'friendDpChange',
+                      "userHashID": user.hashID,
+                      "friendHashID": friend.hashID,
+                      "content": url}
+        friend_msg_json = json.dumps(friend_msg)
+        messageHandler(message_json=friend_msg_json, message=friend_msg)
+
 
 @socketio.on('newInterests')
 def interestChange(newInterests):

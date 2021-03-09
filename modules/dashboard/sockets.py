@@ -1,8 +1,6 @@
 from flask_socketio import emit
-from flask import current_app
 from modules import socketio, redis_client, db
-import pika
-from modules.global_utils import hash_func, messageHandler
+from modules.global_utils import messageHandler
 from modules.models import User
 import json
 import time
@@ -12,7 +10,6 @@ import time
 def broadcast(message):
     print(message)
     users = User.query.all()
-    #jsons = []
     for user in users:
         if user.hashID != "42424242424242424242424242424242":
             msg = {'id': int(time.time() * 1000), 'type': 'message',
@@ -41,9 +38,10 @@ def broadcast(message):
 @socketio.on('dashNameChangeAccepted')
 def nameChangeAccepted(name_json):
     data = json.loads(name_json)
-    message = """Your request for name change has been processed
-                 successfully. Your new name {}.""".format(data['newName'])
+    message = "Your request for name change has been processed\
+                successfully. Your new name {}.".format(data['newName'])
     user_obj = User.query.filter_by(email=data['email']).first()
+    oldName = user_obj.username
     msg = {'id': int(time.time() * 1000), 'type': 'message',
            "userHashID": "42424242424242424242424242424242",
            "friendHashID": user_obj.hashID, "content": message}
@@ -59,21 +57,35 @@ def nameChangeAccepted(name_json):
         emit('nameChange', name_json, room=receiver)
     db.session.commit()
 
+    friend_message = "Your friend {} has changed his\
+         name to {}".format(oldName, data['newName'])
     for friend in user_obj.friends:
-        friend_msg = {'type': 'friendNameChange',
+        friend_msg = {'type': 'message',
                       "userHashID": user_obj.hashID,
-                      "friendHashID": friend.friend_hashID,
-                      "content": data['newName']}
+                      "friendHashID": friend.hashID,
+                      "content": friend_message}
+        friend_nameChange_msg = {'type': 'friendNameChange',
+                                 "userHashID": user_obj.hashID,
+                                 "friendHashID": friend.hashID,
+                                 "content": data['newName']}
+        friend_nameChange_msg_json = json.dumps(friend_nameChange_msg)
         friend_msg_json = json.dumps(friend_msg)
-        messageHandler(message_json=friend_msg_json, message=friend_msg)
+        messageHandler(message_json=friend_nameChange_msg_json,
+                       message=friend_nameChange_msg)
+        messageHandler(message_json=friend_msg_json,
+                       message=friend_msg)
 
 
 @socketio.on('dashNameChangeDenied')
 def nameChangeDenied(name_json):
     data = json.loads(name_json)
-    message = "Your request for name change couldn't be processed, as the name you requested doesn't match the official records. If you believe this is an error from our end, please drop us a feedback regarding this."
+    message = "Your request for name change couldn't be processed, as\
+         the name you requested doesn't match the official records.\
+        If you believe this is an error from our end, please drop us a\
+        feedback regarding this."
     user_obj = User.query.filter_by(email=data['email']).first()
-    msg = {'id': int(time.time() * 1000), "userHashID": "42424242424242424242424242424242",
+    msg = {'id': int(time.time() * 1000),
+           "userHashID": "42424242424242424242424242424242",
            "friendHashID": user_obj.hashID, "content": message}
     json_msg = json.dumps(msg)
     messageHandler(message_json=json_msg, message=msg)
