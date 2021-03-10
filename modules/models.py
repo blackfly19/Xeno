@@ -17,15 +17,15 @@ class User(db.Model):
     interest_4 = db.Column('interest4', db.String(150), nullable=True)
     interest_5 = db.Column('interest5', db.String(150), nullable=True)
     block = db.relationship('Block', backref='user_details', lazy=True,
-                            foreign_keys='Block.blocker_hashID')
+                            foreign_keys='Block.blocker_hashID', cascade="all,delete")
     friends = db.relationship('FriendList', backref='user_details',
-                              lazy=True, foreign_keys='FriendList.user_hashID')
+                              lazy=True, foreign_keys='FriendList.user_hashID', cascade="all,delete")
 
 
 class Block(db.Model):
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
     blocker_hashID = db.Column(
-        db.String(40), db.ForeignKey('user.hashID',ondelete="cascade"), nullable=False)
+        db.String(40), db.ForeignKey('user.hashID'), nullable=False)
     blockee_hashID = db.Column(
         db.String(40), db.ForeignKey('user.hashID'), nullable=False)
 
@@ -33,6 +33,6 @@ class Block(db.Model):
 class FriendList(db.Model):
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
     user_hashID = db.Column(
-        db.String(40), db.ForeignKey('user.hashID',ondelete="cascade"), nullable=False)
+        db.String(40), db.ForeignKey('user.hashID'), nullable=False)
     friend_hashID = db.Column(
         db.String(40), db.ForeignKey('user.hashID'), nullable=False)
