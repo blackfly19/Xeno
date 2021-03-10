@@ -25,7 +25,7 @@ class User(db.Model):
 class Block(db.Model):
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
     blocker_hashID = db.Column(
-        db.String(40), db.ForeignKey('user.hashID'), nullable=False)
+        db.String(40), db.ForeignKey('user.hashID',ondelete="cascade"), nullable=False)
     blockee_hashID = db.Column(
         db.String(40), db.ForeignKey('user.hashID'), nullable=False)
 
@@ -33,6 +33,6 @@ class Block(db.Model):
 class FriendList(db.Model):
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)
     user_hashID = db.Column(
-        db.String(40), db.ForeignKey('user.hashID'), nullable=False)
+        db.String(40), db.ForeignKey('user.hashID',ondelete="cascade"), nullable=False)
     friend_hashID = db.Column(
         db.String(40), db.ForeignKey('user.hashID'), nullable=False)

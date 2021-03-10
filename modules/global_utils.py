@@ -2,11 +2,15 @@ import json
 from flask import current_app
 from flask_socketio import emit
 from modules import redis_client
-from modules.models import Block
+from modules.models import Block, User
 import pika
 import io
 from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials
+from exponent_server_sdk import DeviceNotRegisteredError, PushClient
+from exponent_server_sdk import PushMessage, PushResponseError, PushServerError
+from requests.exceptions import ConnectionError, HTTPError
+import rollbar
 import base64
 import cloudinary
 import cloudinary.uploader as Uploader
@@ -30,6 +34,8 @@ def messageHandler(message_json, message=None):
         msg = json.loads(message_json)
 
     receiver = redis_client.get(msg['friendHashID'])
+    user = User.query.filter_by(hashID=msg['friendHashID']).first()
+    token_id = user.notif_token
 
     if msg['type'] != 'message':
         check_for_block = None
@@ -46,6 +52,8 @@ def messageHandler(message_json, message=None):
             queue_val = hash_func(msg['friendHashID'])
             channel.basic_publish(
                 exchange='', routing_key=str(queue_val), body=message_json)
+            if msg['type'] == 'message':
+                notifications(token_id, "New Message", msg['content'])
             channel.close()
         else:
             receiver = receiver.decode('utf-8')
@@ -86,4 +94,43 @@ def convert_base64_to_url(encoded_img, imageFileName):
     image_details = Uploader.upload(
         in_mem, public_id=imageFileName, invalidate=True)
     return image_details['url']
+
+
+def notifications(token, title, message, extra=None):
+    try:
+        response = PushClient().publish(PushMessage(to=token,
+                                                    title=title,
+                                                    priority='high',
+                                                    sound='default',
+                                                    body=message,
+                                                    data=extra))
+    except PushServerError as exc:
+        rollbar.report_exc_info(
+            extra_data={
+                'token': token,
+                'message': message,
+                'extra': extra,
+                'errors': exc.errors,
+                'response_data': exc.response_data,
+            })
+        raise
+    except (ConnectionError, HTTPError) as exc:
+        rollbar.report_exc_info(
+            extra_data={'token': token, 'message': message, 'extra': extra})
+        raise self.retry(exc=exc)
+
+    try:
+        response.validate_response()
+    except DeviceNotRegisteredError:
+        from notifications.models import PushToken
+        PushToken.objects.filter(token=token).update(active=False)
+    except PushResponseError as exc:
+        rollbar.report_exc_info(
+            extra_data={
+                'token': token,
+                'message': message,
+                'extra': extra,
+                'push_response': exc.push_response._asdict(),
+            })
+        raise self.retry(exc=exc)
 

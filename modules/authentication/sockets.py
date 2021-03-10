@@ -53,7 +53,7 @@ def newUser(new_data):
 @socketio.on('deleteUser')
 def deleteUser(delete_json):
     data = json.loads(delete_json)
-    user = User.query.filter_by(email=data['email'])
+    user = User.query.filter_by(email=data['email']).first()
     db.session.delete(user)
     db.session.commit()
     msg = Message('Delete', sender='support@getxeno.in',
