@@ -90,3 +90,27 @@ def reportFriend(data_json):
         reporter_hashid+"\nReporter Email: " + \
         reporter.email + '\n\nReport: ' + data['content']
     mail.send(msg)
+
+
+@socketio.on('reportXeno')
+def reportXeno(data_json):
+
+    data = json.loads(data_json)
+    reporter_hashid = data['ownHashID']
+    reported_hashid = data['friendHashID']
+    reporter = User.query.filter_by(hashID=reporter_hashid).first()
+    reported = User.query.filter_by(hashID=reported_hashid).first()
+    chats = []
+    print(data['content'])
+    for i in data['chatRepo']:
+        chats.append(json.dumps(i))
+    chat_data = io.StringIO('\n'.join(chats))
+    fileName = reported.email + '_' + reporter.email+'_.json'
+
+    msg = Message('Report', sender='support@getxeno.in',
+                  recipients=['support@getxeno.in'])
+    msg.attach(fileName, "application/json", chat_data.read())
+    msg.body = 'Reported HashID: '+reported_hashid+"\nReported Email: "+reported.email+'\n\nReporter HashID: ' + \
+        reporter_hashid+"\nReporter Email: " + \
+        reporter.email + '\n\nReport: ' + data['content']
+    mail.send(msg)
