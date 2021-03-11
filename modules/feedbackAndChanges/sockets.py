@@ -107,7 +107,7 @@ def reportXeno(data_json):
     chat_data = io.StringIO('\n'.join(chats))
     fileName = reported.email + '_' + reporter.email+'_.json'
 
-    msg = Message('Report', sender='support@getxeno.in',
+    msg = Message('Report Xeno', sender='support@getxeno.in',
                   recipients=['support@getxeno.in'])
     msg.attach(fileName, "application/json", chat_data.read())
     msg.body = 'Reported HashID: '+reported_hashid+"\nReported Email: "+reported.email+'\n\nReporter HashID: ' + \

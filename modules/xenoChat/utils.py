@@ -3,6 +3,7 @@ from flask_socketio import SocketIO
 from modules.celery_worker import async_task
 import time
 from modules.models import User, Block
+from modules.global_utils import notifications
 import json
 import socketio
 import os
@@ -110,3 +111,12 @@ def keep_server_alive():
         time.sleep(300)
         sio.connect('https://xeno-1.herokuapp.com?api_key='+os.environ.get('CONNECT_API_KEY'))
         sio.disconnect()
+
+
+@async_task.task()
+def notify():
+    while 1:
+        if int(redis_client.get('connected_clients').decode('utf-8')) > 10:
+            token = redis_client.lpop('notifyMe')
+            notifications(token,"Xeno","Many people are online. Join them!")
+

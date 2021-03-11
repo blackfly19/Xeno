@@ -2,7 +2,6 @@ from modules import socketio, redis_client, db
 from flask import request
 from flask_socketio import emit
 import json
-import time
 from modules.models import FriendList
 
 
@@ -16,26 +15,35 @@ def match(Hash):
 @socketio.on('xenoMessage')
 def xenoMessage(message):
     msg = json.loads(message)
-    receiver = redis_client.get(msg['friendHashID'])
-    receiver = receiver.decode('utf-8')
     emit('xenoReceipt', msg['id'], room=request.sid)
-    emit('xenoMessage', message, room=receiver)
+    receiver = redis_client.get(msg['friendHashID'])
+    if receiver is not None:
+        receiver = receiver.decode('utf-8')
+        emit('xenoMessage', message, room=receiver)
+    else:
+        emit('xenoLeft', msg['friendHashID'], room=request.sid)
 
 
 @socketio.on('addOwnFirst')
 def firstTimer(timer_data):
     data = json.loads(timer_data)
     receiver = redis_client.get(data['friendHashID'])
-    receiver = receiver.decode('utf-8')
-    emit('addOwnFirst', timer_data, room=receiver)
+    if receiver is not None:
+        receiver = receiver.decode('utf-8')
+        emit('addOwnFirst', timer_data, room=receiver)
+    else:
+        emit('xenoLeft', data['friendHashID'], room=request.sid)
 
 
 @socketio.on('addOwnSecond')
 def SecondTimer(timer_data):
     data = json.loads(timer_data)
     receiver = redis_client.get(data['friendHashID'])
-    receiver = receiver.decode('utf-8')
-    emit('addOwnSecond', timer_data, room=receiver)
+    if receiver is not None:
+        receiver = receiver.decode('utf-8')
+        emit('addOwnSecond', timer_data, room=receiver)
+    else:
+        emit('xenoLeft', data['friendHashID'], room=request.sid)
 
 
 @socketio.on('revealConsent')
@@ -43,8 +51,11 @@ def consent(data):
     json_data = json.loads(data)
     Hash = json_data['friendHashID']
     receiver = redis_client.get(Hash)
-    receiver = receiver.decode('utf-8')
-    emit('revealConsent', data, room=receiver)
+    if receiver is not None:
+        receiver = receiver.decode('utf-8')
+        emit('revealConsent', data, room=receiver)
+    else:
+        emit('xenoLeft', data['friendHashID'], room=request.sid)
 
 
 @socketio.on('revealFinal')
@@ -69,6 +80,16 @@ def final(data):
         emit('revealFinal', False, room=friend_receiver)
 
 
-#@socketio.on('notifyMe')
-#def notifyMe():
+@socketio.on('xenoLeft')
+def xenoLeft(friendHashID):
+    sender = redis_client.get(request.sid).decode('utf-8')
+    receiver = redis_client.get(friendHashID)
+    if receiver is not None:
+        receiver = receiver.decode('utf-8')
+        emit('xenoLeft', sender, room=receiver)
 
+
+@socketio.on('notifyMe')
+def notifyMe(hashID):
+
+    redis_client.rpush('notifyMe', hashID)

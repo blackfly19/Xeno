@@ -134,4 +134,3 @@ def notifications(token, title, message, extra=None):
                 'push_response': exc.push_response._asdict(),
             })
 #        raise self.retry(exc=exc)
-

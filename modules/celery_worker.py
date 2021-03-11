@@ -31,7 +31,8 @@ else:
 
 async_task = make_celery(celery_app)
 
-from modules.xenoChat.utils import SeemaTaparia, keep_server_alive
+from modules.xenoChat.utils import SeemaTaparia, keep_server_alive, notify
 
 SeemaTaparia.delay(celery_app.config['SOCKETIO_URL'])
 keep_server_alive.delay()
+notify.delay()
