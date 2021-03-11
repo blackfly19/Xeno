@@ -53,7 +53,7 @@ def messageHandler(message_json, message=None):
             channel.basic_publish(
                 exchange='', routing_key=str(queue_val), body=message_json)
             if msg['type'] == 'message':
-                notifications(token_id, "New Message", msg['content'])
+                notifications(token_id, msg['userHashID'], msg['content'])
             channel.close()
         else:
             receiver = receiver.decode('utf-8')
@@ -73,8 +73,6 @@ def face_verify(image_url, encoded_img):
         url=image_url, detection_model='detection_02')
     camera_pic = face_client.face.detect_with_stream(
         in_mem, detection_model='detection_02')
-    print(camera_pic[0])
-    print(display_pic[0])
 
     verify_result = face_client.face.verify_face_to_face(
         display_pic[0].face_id, camera_pic[0].face_id)
@@ -117,7 +115,7 @@ def notifications(token, title, message, extra=None):
     except (ConnectionError, HTTPError) as exc:
         rollbar.report_exc_info(
             extra_data={'token': token, 'message': message, 'extra': extra})
-        raise self.retry(exc=exc)
+#        raise self.retry(exc=exc)
 
     try:
         response.validate_response()
@@ -132,5 +130,5 @@ def notifications(token, title, message, extra=None):
                 'extra': extra,
                 'push_response': exc.push_response._asdict(),
             })
-        raise self.retry(exc=exc)
+#        raise self.retry(exc=exc)
 

@@ -39,14 +39,15 @@ def dpChange(data):
            "friendHashID": user.hashID, "content": url}
     json_msg = json.dumps(msg)
     messageHandler(message_json=json_msg, message=msg)
-
+    blockees = user.block
     for friend in user.friends:
-        friend_msg = {'type': 'friendDpChange',
-                      "userHashID": user.hashID,
-                      "friendHashID": friend.friend_hashID,
-                      "content": url}
-        friend_msg_json = json.dumps(friend_msg)
-        messageHandler(message_json=friend_msg_json, message=friend_msg)
+        if friend not in blockees:
+            friend_msg = {'type': 'friendDpChange',
+                          "userHashID": user.hashID,
+                          "friendHashID": friend.friend_hashID,
+                          "content": url}
+            friend_msg_json = json.dumps(friend_msg)
+            messageHandler(message_json=friend_msg_json, message=friend_msg)
 
 
 @socketio.on('newInterests')

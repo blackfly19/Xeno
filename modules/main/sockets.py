@@ -12,7 +12,7 @@ def connect():
         return False
     sid = request.sid
     redis_client.incr('connected_clients')
-    #print("Connected: ", sid)
+    print("Connected: ", sid)
     emit('authorize', 1, room=sid)
 
 
@@ -35,8 +35,8 @@ def onlineUsers():
 @socketio.on('mapHashID')
 def mapHashID(Hash):
 
-    #print("Hash: ", Hash)
-    #print("Sid: ", request.sid)
+    print("Hash: ", Hash)
+    print("Sid: ", request.sid)
     if Hash is not None:
         pika_client = pika.BlockingConnection(
             pika.URLParameters(current_app.config['MQ_URL']))
@@ -47,18 +47,18 @@ def mapHashID(Hash):
         redis_client.set(request.sid, Hash)
         redis_client.set(Hash, request.sid)
 
-        if redis_client.hexists('NameChange', Hash):
+        """if redis_client.hexists('NameChange', Hash):
             name_email = redis_client.hget('NameChange', Hash).decode('utf-8')
             name_email = name_email.split(' ')
             name_json = json.dumps(
                 {'hashID': Hash, 'newName': name_email[1],
                  'email': name_email[0]})
             emit('nameChange', name_json, room=request.sid)
-            redis_client.hdel('NameChange', Hash)
+            redis_client.hdel('NameChange', Hash)"""
 
         queue_val = hash_func(Hash)
         all_msgs = []
-        val = channel.queue_declare(queue=str(queue_val))
+        val = channel.queue_declare(queue=str(queue_val), passive=True)
         num_msgs = val.method.message_count
         if num_msgs != 0:
             for method_frame, _, body in channel.consume(str(queue_val)):

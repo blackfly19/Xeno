@@ -1,5 +1,6 @@
 from modules import socketio, db
 from modules.models import Block, User
+from modules.global_utils import messageHandler
 import json
 
 
@@ -12,8 +13,13 @@ def addBlock(block_json):
         blockee_hashID=block_dict['blockee'])
     db.session.add(new_block)
     db.session.commit()
-    user = User.query.filter_by(hashID=block_dict['blocker']).first()
-    print(user.block)
+    url = "https://res.cloudinary.com/fsduhag8/image/upload/v1615465702/defaultUser_uodzbq.jpg"
+    friend_msg = {'type': 'friendDpChange',
+                  "userHashID": block_dict['blocker'],
+                  "friendHashID": block_dict['blockee'],
+                  "content": url}
+    friend_msg_json = json.dumps(friend_msg)
+    messageHandler(message_json=friend_msg_json, message=friend_msg)
 
 
 @socketio.on('removeBlock')
@@ -23,5 +29,12 @@ def removeBlock(block_json):
     rem_block = Block.query.filter_by(
         blocker_hashID=block_dict['blocker'],
         blockee_hashID=block_dict['blockee']).first()
+    user = User.query.filter_by(hashID=block_dict['blocker']).first()
     db.session.delete(rem_block)
     db.session.commit()
+    friend_msg = {'type': 'friendDpChange',
+                  "userHashID": block_dict['blocker'],
+                  "friendHashID": block_dict['blockee'],
+                  "content": user.imageUrl}
+    friend_msg_json = json.dumps(friend_msg)
+    messageHandler(message_json=friend_msg_json, message=friend_msg)

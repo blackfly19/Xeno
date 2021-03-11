@@ -69,6 +69,6 @@ def final(data):
         emit('revealFinal', False, room=friend_receiver)
 
 
-@socketio.on('syncTime')
-def syncTimers():
-    emit('syncTime', time.time()*1000)
+#@socketio.on('notifyMe')
+#def notifyMe():
+

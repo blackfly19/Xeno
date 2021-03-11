@@ -45,35 +45,44 @@ def nameChangeAccepted(name_json):
     msg = {'id': int(time.time() * 1000), 'type': 'message',
            "userHashID": "42424242424242424242424242424242",
            "friendHashID": user_obj.hashID, "content": message}
+    nameChange_msg = {'type': 'nameChange',
+                      "userHashID": "42424242424242424242424242424242",
+                      "friendHashID": user_obj.hashID,
+                      "content": data['newName']}
     json_msg = json.dumps(msg)
+    json_nameChange_msg = json.dumps(nameChange_msg)
     user_obj.username = data['newName']
-    receiver = messageHandler(message_json=json_msg, message=msg)
-    if receiver is None:
+    db.session.commit()
+    messageHandler(message_json=json_nameChange_msg, message=nameChange_msg)
+    messageHandler(message_json=json_msg, message=msg)
+    """if receiver is None:
         redis_client.hset('NameChange', user_obj.hashID,
                           data['email']+' '+data['newName'])
     else:
         data['hashID'] = user_obj.hashID
         name_json = json.dumps(data)
-        emit('nameChange', name_json, room=receiver)
-    db.session.commit()
+        emit('nameChange', name_json, room=receiver)"""
 
     friend_message = "Your friend {} has changed their\
  name to {}".format(oldName, data['newName'])
+
+    blockees = user_obj.block
     for friend in user_obj.friends:
-        friend_msg = {'id': int(time.time() * 1000), 'type': 'message',
-                      "userHashID": "42424242424242424242424242424242",
-                      "friendHashID": friend.friend_hashID,
-                      "content": friend_message}
-        friend_nameChange_msg = {'type': 'friendNameChange',
-                                 "userHashID": user_obj.hashID,
-                                 "friendHashID": friend.friend_hashID,
-                                 "content": data['newName']}
-        friend_nameChange_msg_json = json.dumps(friend_nameChange_msg)
-        friend_msg_json = json.dumps(friend_msg)
-        messageHandler(message_json=friend_nameChange_msg_json,
-                       message=friend_nameChange_msg)
-        messageHandler(message_json=friend_msg_json,
-                       message=friend_msg)
+        if friend not in blockees:
+            friend_msg = {'id': int(time.time() * 1000), 'type': 'message',
+                          "userHashID": "42424242424242424242424242424242",
+                          "friendHashID": friend.friend_hashID,
+                          "content": friend_message}
+            friend_nameChange_msg = {'type': 'friendNameChange',
+                                     "userHashID": user_obj.hashID,
+                                     "friendHashID": friend.friend_hashID,
+                                     "content": data['newName']}
+            friend_nameChange_msg_json = json.dumps(friend_nameChange_msg)
+            friend_msg_json = json.dumps(friend_msg)
+            messageHandler(message_json=friend_nameChange_msg_json,
+                           message=friend_nameChange_msg)
+            messageHandler(message_json=friend_msg_json,
+                           message=friend_msg)
 
 
 @socketio.on('dashNameChangeDenied')
