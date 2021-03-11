@@ -1,4 +1,4 @@
-from flask import request, current_app,request
+from flask import request, current_app
 import json
 import pika
 from flask_socketio import emit
@@ -58,7 +58,7 @@ def mapHashID(Hash):
 
         queue_val = hash_func(Hash)
         all_msgs = []
-        val = channel.queue_declare(queue=str(queue_val), passive=True)
+        val = channel.queue_declare(queue=str(queue_val))
         num_msgs = val.method.message_count
         if num_msgs != 0:
             for method_frame, _, body in channel.consume(str(queue_val)):
