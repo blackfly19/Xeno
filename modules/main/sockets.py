@@ -12,7 +12,7 @@ def connect():
         return False
     sid = request.sid
     redis_client.incr('connected_clients')
-    print("Connected: ", sid)
+    #print("Connected: ", sid)
     emit('authorize', 1, room=sid)
 
 
@@ -35,8 +35,8 @@ def onlineUsers():
 @socketio.on('mapHashID')
 def mapHashID(Hash):
 
-    print("Hash: ", Hash)
-    print("Sid: ", request.sid)
+    #print("Hash: ", Hash)
+    #print("Sid: ", request.sid)
     if Hash is not None:
         pika_client = pika.BlockingConnection(
             pika.URLParameters(current_app.config['MQ_URL']))
