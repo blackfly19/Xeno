@@ -117,5 +117,6 @@ def notify():
         if int(redis_client.get('connected_clients').decode('utf-8')) > 10:
             token = redis_client.lpop('notifyMe')
             token = token.decode('utf-8')
+            print(token)
             notifications(token,"Xeno","Many people are online. Join them!")
 
