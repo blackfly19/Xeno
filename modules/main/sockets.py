@@ -18,8 +18,8 @@ def Connect():
 @socketio.on('disconnect')
 def Disconnect():
     print("Disconnected: ", request.sid)
-    redis_client.decr('connected_clients')
     if redis_client.exists(request.sid):
+        redis_client.decr('connected_clients')
         user_hash = redis_client.get(request.sid).decode('utf-8')
         redis_client.delete(request.sid)
         redis_client.delete(user_hash)
