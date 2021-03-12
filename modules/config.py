@@ -19,7 +19,8 @@ class DevelopmentConfig(Config):
     DEBUG = True
     TESTING = True
     SECRET_KEY = "Not a secret anymore"
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+#    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///migrate_db"
     CELERY_BROKER_URL = "redis://127.0.0.1"
     REDIS_URL = "redis://127.0.0.1"
     SOCKETIO_URL = None
