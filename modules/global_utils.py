@@ -1,7 +1,8 @@
 import json
 from flask import current_app
 from flask_socketio import emit
-from modules import redis_client
+from sqlalchemy import exc
+from modules import redis_client, db
 from modules.models import Block, User
 import pika
 import io
@@ -34,8 +35,6 @@ def messageHandler(message_json, message=None):
         msg = json.loads(message_json)
 
     receiver = redis_client.get(msg['friendHashID'])
-    user = User.query.filter_by(hashID=msg['friendHashID']).first()
-    token_id = user.notif_token
 
     if msg['type'] != 'message':
         check_for_block = None
@@ -53,7 +52,10 @@ def messageHandler(message_json, message=None):
             channel.basic_publish(
                 exchange='', routing_key=str(queue_val), body=message_json)
             if msg['type'] == 'message':
-                notifications(token_id, msg['userHashID'], msg['content'])
+                user = User.query.filter_by(hashID=msg['userHashID']).first()
+                friend = User.query.filter_by(hashID=msg['friendHashID']).first()
+                token_id = friend.notif_token
+                notifications(token_id, user.username, msg['content'])
             channel.close()
         else:
             receiver = receiver.decode('utf-8')
@@ -134,3 +136,13 @@ def notifications(token, title, message, extra=None):
                 'push_response': exc.push_response._asdict(),
             })
 #        raise self.retry(exc=exc)
+
+
+def transactionFail(original_function):
+    def wrapperFunction(*args, **kwargs):
+        try:
+            return original_function(*args, **kwargs)
+        except exc.SQLAlchemyError as e:
+            print(e)
+            db.session.rollback()
+    return wrapperFunction

@@ -101,8 +101,6 @@ def SeemaTaparia(socketio_url):
             socket.emit('xenoHashID', user2_json,
                         room=redis_client.get(hash_user1).decode('utf-8'))
 
-            print('values emitted')
-
 
 @async_task.task()
 def keep_server_alive():

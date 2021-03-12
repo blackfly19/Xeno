@@ -1,7 +1,7 @@
 from flask import request, current_app
 import json
 import pika
-from flask_socketio import emit
+from flask_socketio import emit, disconnect
 from modules import socketio, redis_client
 from modules.global_utils import hash_func
 
@@ -11,7 +11,6 @@ def connect():
     if request.args.get('api_key') != current_app.config['CONNECT_API_KEY']:
         return False
     sid = request.sid
-    redis_client.incr('connected_clients')
     print("Connected: ", sid)
     emit('authorize', 1, room=sid)
 
@@ -20,10 +19,10 @@ def connect():
 def disconnect():
     print("Disconnected: ", request.sid)
     redis_client.decr('connected_clients')
-    if redis_client.exists(request.sid):
-        user_hash = redis_client.get(request.sid)
-        redis_client.delete(request.sid)
-        redis_client.delete(user_hash)
+    #if redis_client.exists(request.sid):
+    user_hash = redis_client.get(request.sid).decode('utf-8')
+    redis_client.delete(request.sid)
+    redis_client.delete(user_hash)
 
 
 @socketio.on('onlineUsers')
@@ -36,14 +35,17 @@ def onlineUsers():
 def mapHashID(Hash):
 
     print("Hash: ", Hash)
-    print("Sid: ", request.sid)
     if Hash is not None:
         pika_client = pika.BlockingConnection(
             pika.URLParameters(current_app.config['MQ_URL']))
         channel = pika_client.channel()
 
         if redis_client.exists(Hash):
-            redis_client.delete(redis_client.get(Hash))
+            sid = redis_client.get(Hash).decode('utf-8')
+            disconnect(sid)
+            redis_client.delete(sid)
+        else:
+            redis_client.incr('connected_clients')
         redis_client.set(request.sid, Hash)
         redis_client.set(Hash, request.sid)
 
@@ -78,5 +80,4 @@ def mapHashID(Hash):
             if len(all_msgs) != 0:
                 all_msgs = json.dumps(all_msgs)
                 emit('unread', all_msgs, room=request.sid)
-                print(all_msgs)
         channel.close()

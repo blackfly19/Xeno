@@ -1,3 +1,4 @@
+alembic==1.5.7
 amqp==5.0.5
 appdirs==1.4.3
 autopep8==1.5.5
@@ -25,6 +26,7 @@ exponent-server-sdk==1.0.1
 Flask==1.1.2
 Flask-Mail==0.9.1
 flask-marshmallow==0.14.0
+Flask-Migrate==2.7.0
 flask-redis==0.4.0
 Flask-SocketIO==5.0.1
 Flask-SQLAlchemy==2.4.4
@@ -39,6 +41,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.3
 kombu==5.0.2
 lockfile==0.12.2
+Mako==1.1.4
 MarkupSafe==1.1.1
 marshmallow==3.10.0
 marshmallow-sqlalchemy==0.24.2
@@ -54,6 +57,8 @@ prompt-toolkit==3.0.14
 psycopg2==2.8.6
 pycodestyle==2.6.0
 pyparsing==2.4.6
+python-dateutil==2.8.1
+python-editor==1.0.4
 python-engineio==4.0.0
 python-socketio==5.0.4
 pytoml==0.1.21

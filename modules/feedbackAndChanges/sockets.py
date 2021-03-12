@@ -1,7 +1,7 @@
 from modules import mail, socketio, db
 from modules.models import User
 from flask_mail import Message
-from modules.global_utils import messageHandler, convert_base64_to_url
+from modules.global_utils import messageHandler, convert_base64_to_url, transactionFail
 import json
 import io
 
@@ -28,6 +28,7 @@ def nameChange(name_json):
 
 
 @socketio.on('dpChange')
+@transactionFail
 def dpChange(data):
     image_data = json.loads(data)
     user = User.query.filter_by(hashID=image_data['hashID']).first()
@@ -51,6 +52,7 @@ def dpChange(data):
 
 
 @socketio.on('newInterests')
+@transactionFail
 def interestChange(newInterests):
     data_interests = json.loads(newInterests)
     user_obj = User.query.filter_by(hashID=data_interests['hashID']).first()
@@ -66,7 +68,6 @@ def interestChange(newInterests):
     except IndexError:
         user_obj.interest_5 = None
     db.session.commit()
-    print("Interests Changed")
 
 
 @socketio.on('reportFriend')
@@ -77,7 +78,6 @@ def reportFriend(data_json):
     reporter = User.query.filter_by(hashID=reporter_hashid).first()
     reported = User.query.filter_by(hashID=reported_hashid).first()
     chats = []
-    print(data['content'])
     for i in data['chatRepo']:
         chats.append(json.dumps(i))
     chat_data = io.StringIO('\n'.join(chats))
@@ -101,7 +101,6 @@ def reportXeno(data_json):
     reporter = User.query.filter_by(hashID=reporter_hashid).first()
     reported = User.query.filter_by(hashID=reported_hashid).first()
     chats = []
-    print(data['content'])
     for i in data['chatRepo']:
         chats.append(json.dumps(i))
     chat_data = io.StringIO('\n'.join(chats))

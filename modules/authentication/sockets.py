@@ -4,13 +4,14 @@ from flask import request, current_app, render_template
 from .utils import get_confirm_token
 from modules import db, mail, socketio, redis_client
 from modules.models import User
-from modules.global_utils import hash_func, messageHandler, face_verify, convert_base64_to_url
+from modules.global_utils import hash_func, messageHandler, face_verify, convert_base64_to_url, transactionFail
 from flask_mail import Message
 from flask_socketio import emit
 import pika
 
 
 @socketio.on('newUser')
+@transactionFail
 def newUser(new_data):
     data = json.loads(new_data)
     url = convert_base64_to_url(data['dpBase64'], data['hashID'])
@@ -24,23 +25,18 @@ def newUser(new_data):
                     interest_4=data['interests'][3],
                     interest_5=data['interests'][4])
     db.session.add(new_user)
-    try:
-        db.session.commit()
-        msg = Message('Xeno', sender='support@getxeno.in',
-                      recipients=[data['email']])
-        msg.html = render_template(
-            'email.html', name=data['name'],
-            url="https://www.getxeno.in/"+get_confirm_token(data['hashID']))
-        mail.send(msg)
-        msg = {'id': int(time.time() * 1000), 'type': 'message',
-               "userHashID": "42424242424242424242424242424242",
-               "friendHashID": data['hashID'], "content": "Welcome To Xeno!"}
-        msg = json.dumps(msg)
-        emit('message', msg, room=request.sid)
-    except Exception as e:
-        print(e)
-        print("Error adding data to database")
-        db.session.rollback()
+    db.session.commit()
+    msg = Message('Xeno', sender='support@getxeno.in',
+                  recipients=[data['email']])
+    msg.html = render_template(
+        'email.html', name=data['name'],
+    url="https://www.getxeno.in/"+get_confirm_token(data['hashID']))
+    mail.send(msg)
+    msg = {'id': int(time.time() * 1000), 'type': 'message',
+            "userHashID": "42424242424242424242424242424242",
+            "friendHashID": data['hashID'], "content": "Welcome To Xeno!"}
+    msg = json.dumps(msg)
+    emit('message', msg, room=request.sid)
     redis_client.set(request.sid, data['hashID'])
     redis_client.set(data['hashID'], request.sid)
     pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config['MQ_URL']))
@@ -51,6 +47,7 @@ def newUser(new_data):
 
 
 @socketio.on('deleteUser')
+@transactionFail
 def deleteUser(delete_json):
     data = json.loads(delete_json)
     user = User.query.filter_by(email=data['email']).first()

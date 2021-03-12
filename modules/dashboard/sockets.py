@@ -1,6 +1,6 @@
 from flask_socketio import emit
 from modules import socketio, redis_client, db
-from modules.global_utils import messageHandler
+from modules.global_utils import messageHandler, transactionFail
 from modules.models import User
 import json
 import time
@@ -8,7 +8,6 @@ import time
 
 @socketio.on('dashBroadcast')
 def broadcast(message):
-    print(message)
     users = User.query.all()
     for user in users:
         if user.hashID != "42424242424242424242424242424242":
@@ -36,6 +35,7 @@ def broadcast(message):
 
 
 @socketio.on('dashNameChangeAccepted')
+@transactionFail
 def nameChangeAccepted(name_json):
     data = json.loads(name_json)
     message = "Your request for name change has been processed\

@@ -1,12 +1,12 @@
 from modules import socketio, db
 from modules.models import Block, User
-from modules.global_utils import messageHandler
+from modules.global_utils import messageHandler, transactionFail
 import json
 
 
 @socketio.on('addBlock')
+@transactionFail
 def addBlock(block_json):
-    print(block_json)
     block_dict = json.loads(block_json)
     new_block = Block(
         blocker_hashID=block_dict['blocker'],
@@ -23,8 +23,8 @@ def addBlock(block_json):
 
 
 @socketio.on('removeBlock')
+@transactionFail
 def removeBlock(block_json):
-    print(block_json)
     block_dict = json.loads(block_json)
     rem_block = Block.query.filter_by(
         blocker_hashID=block_dict['blocker'],

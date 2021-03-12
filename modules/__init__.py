@@ -4,10 +4,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_marshmallow import Marshmallow
 from flask_redis import FlaskRedis
+from flask_migrate import Migrate
 import os
 
 socketio = SocketIO()
 db = SQLAlchemy()
+migrate = Migrate()
 mail = Mail()
 ma = Marshmallow()
 redis_client = FlaskRedis()
@@ -30,6 +32,7 @@ def create_app(config_class):
                       message_queue=app.config['SOCKETIO_URL'],
                       async_mode='eventlet')
     redis_client.init_app(app)
+    migrate.init_app(app, db)
 
     redis_client.set('match_queue_count', 0)
     redis_client.set('connected_clients', 0)

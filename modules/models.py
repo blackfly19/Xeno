@@ -20,6 +20,10 @@ class User(db.Model):
                             foreign_keys='Block.blocker_hashID', cascade="all,delete")
     friends = db.relationship('FriendList', backref='user_details',
                               lazy=True, foreign_keys='FriendList.user_hashID', cascade="all,delete")
+    blockee = db.relationship('Block', lazy=True, foreign_keys='Block.blockee_hashID',
+                              cascade="all,delete")
+    friendee = db.relationship('FriendList', lazy=True, foreign_keys='FriendList.friend_hashID',
+                              cascade="all,delete")
 
 
 class Block(db.Model):
@@ -35,4 +39,4 @@ class FriendList(db.Model):
     user_hashID = db.Column(
         db.String(40), db.ForeignKey('user.hashID'), nullable=False)
     friend_hashID = db.Column(
-        db.String(40), db.ForeignKey('user.hashID'), nullable=False)
+        db.String(40), db.ForeignKey('user.hashID'), nullable=False)    

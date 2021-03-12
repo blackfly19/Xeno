@@ -1,6 +1,7 @@
 from modules import socketio, redis_client, db
 from flask import request
 from flask_socketio import emit
+from modules.global_utils import transactionFail
 import json
 from modules.models import FriendList
 
@@ -59,6 +60,7 @@ def consent(data):
 
 
 @socketio.on('revealFinal')
+@transactionFail
 def final(data):
     json_data = json.loads(data)
     user_receiver = redis_client.get(json_data['userHashID'])
