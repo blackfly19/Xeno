@@ -7,7 +7,7 @@ from modules.global_utils import hash_func
 
 
 @socketio.on('connect')
-def connect():
+def Connect():
     if request.args.get('api_key') != current_app.config['CONNECT_API_KEY']:
         return False
     sid = request.sid
@@ -16,13 +16,13 @@ def connect():
 
 
 @socketio.on('disconnect')
-def disconnect():
+def Disconnect():
     print("Disconnected: ", request.sid)
     redis_client.decr('connected_clients')
-    #if redis_client.exists(request.sid):
-    user_hash = redis_client.get(request.sid).decode('utf-8')
-    redis_client.delete(request.sid)
-    redis_client.delete(user_hash)
+    if redis_client.exists(request.sid):
+        user_hash = redis_client.get(request.sid).decode('utf-8')
+        redis_client.delete(request.sid)
+        redis_client.delete(user_hash)
 
 
 @socketio.on('onlineUsers')
