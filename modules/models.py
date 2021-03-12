@@ -39,4 +39,8 @@ class FriendList(db.Model):
     user_hashID = db.Column(
         db.String(40), db.ForeignKey('user.hashID'), nullable=False)
     friend_hashID = db.Column(
-        db.String(40), db.ForeignKey('user.hashID'), nullable=False)    
+        db.String(40), db.ForeignKey('user.hashID'), nullable=False)  
+
+
+class Stats(db.Model):
+      id = db.Column('id',db.Integer,primary_key=True)
