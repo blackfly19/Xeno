@@ -115,8 +115,10 @@ def keep_server_alive():
 def notify():
     while 1:
         if int(redis_client.get('connected_clients').decode('utf-8')) > 10:
-            token = redis_client.lpop('notifyMe')
-            token = token.decode('utf-8')
-            print(token)
-            notifications(token,"Xeno","Many people are online. Join them!")
+            length = redis_client.llen('notifyMe').decode('utf-8')
+            for i in range(length):
+                token = redis_client.lpop('notifyMe')
+                token = token.decode('utf-8')
+                print(token)
+                notifications(token,"Xeno","Many people are online. Join them!")
 
