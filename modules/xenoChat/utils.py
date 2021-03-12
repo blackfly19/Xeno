@@ -115,7 +115,7 @@ def keep_server_alive():
 def notify():
     while 1:
         if int(redis_client.get('connected_clients').decode('utf-8')) > 10:
-            length = redis_client.llen('notifyMe').decode('utf-8')
+            length = redis_client.llen('notifyMe')
             for i in range(length):
                 token = redis_client.lpop('notifyMe')
                 token = token.decode('utf-8')

@@ -42,8 +42,8 @@ def mapHashID(Hash):
 
         if redis_client.exists(Hash):
             sid = redis_client.get(Hash).decode('utf-8')
-            disconnect(sid)
             redis_client.delete(sid)
+            disconnect(sid)
         else:
             redis_client.incr('connected_clients')
         redis_client.set(request.sid, Hash)
