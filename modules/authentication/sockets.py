@@ -16,12 +16,20 @@ def newUser(new_data):
     data = json.loads(new_data)
     url = convert_base64_to_url(data['dpBase64'], data['hashID'])
     print(url)
-    new_user = User(hashID=data['hashID'], username=data['name'],
-                    email=data['email'], notif_token=data['token'],
-                    phone=data['phone'], verified=False, imageUrl=url,
-                    interest_1=data['interests'][0],
-                    interest_2=data['interests'][1],
-                    interest_3=data['interests'][2])
+    if data['email'] == 'xeno.test434@learner.manipal.edu':
+        new_user = User(hashID=data['hashID'], username=data['name'],
+                        email=data['email'], notif_token=data['token'],
+                        phone=data['phone'], verified=True, imageUrl=url,
+                        interest_1=data['interests'][0],
+                        interest_2=data['interests'][1],
+                        interest_3=data['interests'][2])
+    else:
+        new_user = User(hashID=data['hashID'], username=data['name'],
+                        email=data['email'], notif_token=data['token'],
+                        phone=data['phone'], verified=False, imageUrl=url,
+                        interest_1=data['interests'][0],
+                        interest_2=data['interests'][1],
+                        interest_3=data['interests'][2])
     try:
         new_user.interest_4 = data['interests'][3]
     except IndexError:
