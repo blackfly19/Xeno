@@ -45,7 +45,7 @@ def newUser(new_data):
                   recipients=[data['email']])
     msg.html = render_template(
         'email.html', name=data['name'],
-    url="https://www.getxeno.in/"+get_confirm_token(data['hashID']))
+    url="https://www.getxeno.in/token/"+get_confirm_token(data['hashID']))
     mail.send(msg)
     msg = {'id': int(time.time() * 1000), 'type': 'message',
             "userHashID": "42424242424242424242424242424242",
