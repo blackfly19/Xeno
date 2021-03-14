@@ -1,7 +1,7 @@
 from modules import create_app, socketio
 from modules.config import DevelopmentConfig
 import unittest
-import json
+import uuid
 
 
 class MainTest(unittest.TestCase):
@@ -14,18 +14,16 @@ class MainTest(unittest.TestCase):
         assert not client.is_connected()
         client = socketio.test_client(self.app, query_string='?api_key=ankit')
         assert client.is_connected()
+        print(client.get_received())
         client.disconnect()
 
-
-class DatabaseTest(unittest.TestCase):
-
-    def setUp(self):
-        self.app = create_app(DevelopmentConfig())
-        self.new_user = {''}
-
-    def addData(self):
+    def test_mapHashID(self):
         client = socketio.test_client(self.app, query_string='?api_key=ankit')
-        client.emit('new_user')
+        hashID = uuid.uuid1()
+        client.emit('mapHashID', hashID.hex)
+
+    def test_onlineUsers(self):
+
 
 
 if __name__ == '__main__':
