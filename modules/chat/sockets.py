@@ -29,3 +29,8 @@ def typingIndicator(typing_data):
     if receiver is not None:
         receiver = receiver.decode('utf-8')
         emit('friendTyping', typing_data, room=receiver)
+
+
+@socketio.on_error()
+def error_handler(e):
+    print(e)

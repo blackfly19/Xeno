@@ -21,11 +21,18 @@ def newUser(new_data):
                     phone=data['phone'], verified=False, imageUrl=url,
                     interest_1=data['interests'][0],
                     interest_2=data['interests'][1],
-                    interest_3=data['interests'][2],
-                    interest_4=data['interests'][3],
-                    interest_5=data['interests'][4])
+                    interest_3=data['interests'][2])
+    try:
+        new_user.interest_4 = data['interests'][3]
+    except IndexError:
+        new_user.interest_4 = None
+    try:
+        new_user.interest_5 = data['interests'][4]
+    except IndexError:
+        new_user.interest_5 = None
     db.session.add(new_user)
     db.session.commit()
+
     msg = Message('Xeno', sender='support@getxeno.in',
                   recipients=[data['email']])
     msg.html = render_template(
@@ -54,6 +61,12 @@ def deleteUser(delete_json):
     user = User.query.filter_by(email=data['email']).first()
     db.session.delete(user)
     db.session.commit()
+
+    if redis_client.exists(request.sid):
+        redis_client.decr('connected_clients')
+        user_hash = redis_client.get(request.sid).decode('utf-8')
+        redis_client.delete(request.sid)
+        redis_client.delete(user_hash)
 
     msg = Message('Delete', sender='support@getxeno.in',
                   recipients=['support@getxeno.in'])
@@ -106,7 +119,7 @@ def isEmailVerified(hashID):
         data = {'hashID': hashID}
         data_json = json.dumps(data)
         receiver = redis_client.get(hashID).decode('utf-8')
-        emit('emailVerified', data_json,room=receiver)
+        emit('emailVerified', data_json, room=receiver)
         message = "Your email has been verified successfully!"
         msg = {'id': int(time.time() * 1000), 'type': 'message',
                "userHashID": "42424242424242424242424242424242",
