@@ -87,9 +87,9 @@ def face_verify(image_url, encoded_img):
 
 def convert_base64_to_url(encoded_img, imageFileName):
     in_mem = io.BytesIO(base64.b64decode(encoded_img))
-    img = Image.open(in_mem)
-    img.save(in_mem, format='JPEG')
-    in_mem.seek(0)
+    #img = Image.open(in_mem)
+    #img.save(in_mem, format='JPEG')
+    #in_mem.seek(0)
 
     cloudinary.config(cloud_name=current_app.config['CLOUDINARY_CLOUD_NAME'],
                       api_key=current_app.config['CLOUDINARY_API_KEY'],

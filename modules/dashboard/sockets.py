@@ -93,7 +93,7 @@ def nameChangeDenied(name_json):
         If you believe this is an error from our end, please drop us a\
         feedback regarding this."
     user_obj = User.query.filter_by(email=data['email']).first()
-    msg = {'id': int(time.time() * 1000),
+    msg = {'id': int(time.time() * 1000), 'type': 'message',
            "userHashID": "42424242424242424242424242424242",
            "friendHashID": user_obj.hashID, "content": message}
     json_msg = json.dumps(msg)

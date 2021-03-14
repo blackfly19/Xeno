@@ -39,6 +39,7 @@ def newUser(new_data):
     emit('message', msg, room=request.sid)
     redis_client.set(request.sid, data['hashID'])
     redis_client.set(data['hashID'], request.sid)
+    redis_client.incr('connected_clients')
     pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config['MQ_URL']))
     channel = pika_client.channel()
     queue_val = hash_func(data['hashID'])
@@ -53,6 +54,7 @@ def deleteUser(delete_json):
     user = User.query.filter_by(email=data['email']).first()
     db.session.delete(user)
     db.session.commit()
+
     msg = Message('Delete', sender='support@getxeno.in',
                   recipients=['support@getxeno.in'])
     msg.body = 'Email: '+data['email'] + '\n\nReason: ' + data['content'] + \
@@ -60,6 +62,23 @@ def deleteUser(delete_json):
         data['os'] + '\nApp Version: ' + data['appV']
     mail.send(msg)
 
+    url = "https://res.cloudinary.com/fsduhag8/image/upload/v1615465702/defaultUser_uodzbq.jpg"
+
+    for friend in user.friends:
+        friend_nameChange_msg = {'type': 'friendNameChange',
+                                 "userHashID": user.hashID,
+                                 "friendHashID": friend.friend_hashID,
+                                 "content": 'DeletedUser'}
+        friend_dpChange_msg = {'type': 'friendDpChange',
+                               "userHashID": user.hashID,
+                               "friendHashID": friend.friend_hashID,
+                               "content": url}
+        friend_dpChange_msg_json = json.dumps(friend_dpChange_msg)
+        friend_nameChange_msg_json = json.dumps(friend_nameChange_msg)
+        messageHandler(message_json=friend_nameChange_msg_json,
+                       message=friend_nameChange_msg)
+        messageHandler(message_json=friend_dpChange_msg_json,
+                       message=friend_dpChange_msg)
 
 
 @socketio.on('validatePhone')
