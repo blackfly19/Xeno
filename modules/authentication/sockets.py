@@ -7,6 +7,7 @@ from modules.models import User
 from modules.global_utils import hash_func, messageHandler, face_verify, convert_base64_to_url, transactionFail
 from flask_mail import Message
 from flask_socketio import emit
+from modules.messages import welcome_msg_1, welcome_msg_2, welcome_msg_3, welcome_msg_4
 import pika
 
 
@@ -45,21 +46,42 @@ def newUser(new_data):
                   recipients=[data['email']])
     msg.html = render_template(
         'email.html', name=data['name'],
-    url="https://www.getxeno.in/token/"+get_confirm_token(data['hashID']))
+        url="https://www.getxeno.in/token/"+get_confirm_token(data['hashID']))
     mail.send(msg)
-    msg = {'id': int(time.time() * 1000), 'type': 'message',
-            "userHashID": "42424242424242424242424242424242",
-            "friendHashID": data['hashID'], "content": "Welcome To Xeno!"}
-    msg = json.dumps(msg)
-    emit('message', msg, room=request.sid)
+
     redis_client.set(request.sid, data['hashID'])
     redis_client.set(data['hashID'], request.sid)
     redis_client.incr('connected_clients')
-    pika_client = pika.BlockingConnection(pika.URLParameters(current_app.config['MQ_URL']))
+    pika_client = pika.BlockingConnection(
+        pika.URLParameters(current_app.config['MQ_URL']))
     channel = pika_client.channel()
     queue_val = hash_func(data['hashID'])
     channel.queue_declare(queue=str(queue_val))
     channel.close()
+
+    msg = {'id': int(time.time() * 1000), 'type': 'message',
+           "userHashID": "42424242424242424242424242424242",
+           "friendHashID": data['hashID'], "content": welcome_msg_1}
+    msg = json.dumps(msg)
+    emit('message', msg, room=request.sid)
+
+    msg = {'id': int(time.time() * 1000), 'type': 'message',
+           "userHashID": "42424242424242424242424242424242",
+           "friendHashID": data['hashID'], "content": welcome_msg_2}
+    msg = json.dumps(msg)
+    emit('message', msg, room=request.sid)
+
+    msg = {'id': int(time.time() * 1000), 'type': 'message',
+           "userHashID": "42424242424242424242424242424242",
+           "friendHashID": data['hashID'], "content": welcome_msg_3}
+    msg = json.dumps(msg)
+    emit('message', msg, room=request.sid)
+
+    msg = {'id': int(time.time() * 1000), 'type': 'message',
+           "userHashID": "42424242424242424242424242424242",
+           "friendHashID": data['hashID'], "content": welcome_msg_4}
+    msg = json.dumps(msg)
+    emit('message', msg, room=request.sid)
 
 
 @socketio.on('deleteUser')
