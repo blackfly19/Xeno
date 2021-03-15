@@ -1,8 +1,6 @@
-from modules import create_app, redis_client
+from modules import create_app
 from celery import Celery
-from flask import current_app
 from modules.config import ProductionConfig, DevelopmentConfig
-import time
 import os
 
 
@@ -31,8 +29,9 @@ else:
 
 async_task = make_celery(celery_app)
 
-from modules.xenoChat.utils import SeemaTaparia, keep_server_alive, notify
+from modules.xenoChat.utils import SeemaTaparia, keep_server_alive, notify,onlineUsers
 
 SeemaTaparia.delay(celery_app.config['SOCKETIO_URL'])
 keep_server_alive.delay()
 notify.delay()
+onlineUsers.delay(celery_app.config['SOCKETIO_URL'])

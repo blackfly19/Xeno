@@ -32,8 +32,12 @@ def Wait(socketio_url):
 
     if redis_client.ttl('matchqueue') == -2:
         redis_client.decr('match_queue_count')
-        receiver = redis_client.get(Hash).decode('utf-8')
-        socket.emit('matchCancel', Hash, room=receiver)
+        print(Hash)
+        try:
+            receiver = redis_client.get(Hash).decode('utf-8')
+            socket.emit('matchCancel', Hash, room=receiver)
+        except Exception:
+            print("User left")
 
 
 @async_task.task()
@@ -107,18 +111,28 @@ def keep_server_alive():
     sio = socketio.Client()
     while 1:
         time.sleep(300)
-        sio.connect('https://xeno-1.herokuapp.com?api_key='+os.environ.get('CONNECT_API_KEY'))
+        sio.connect('https://xeno-1.herokuapp.com?api_key=' +
+                    os.environ.get('CONNECT_API_KEY'))
         sio.disconnect()
 
 
 @async_task.task()
 def notify():
     while 1:
-        if int(redis_client.get('connected_clients').decode('utf-8')) > 10:
+        if int(redis_client.get('connected_clients').decode('utf-8')) > 5:
             length = redis_client.llen('notifyMe')
             for i in range(length):
                 token = redis_client.lpop('notifyMe')
                 token = token.decode('utf-8')
                 print(token)
-                notifications(token,"Xeno","Many people are online. Join them!")
+                notifications(
+                    token, "Xeno", "Many people are online. Join them!")
 
+
+@async_task.task()
+def onlineUsers(socketio_url):
+    socket = SocketIO(message_queue=socketio_url)
+    while 1:
+        clients = redis_client.get('connected_clients').decode('utf-8')
+        socket.emit('onlineUsers', int(clients)-1, broadcast=True)
+        time.sleep(5)

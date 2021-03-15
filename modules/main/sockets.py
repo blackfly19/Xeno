@@ -28,10 +28,8 @@ def Disconnect():
 
 @socketio.on('onlineUsers')
 def onlineUsers():
-    while 1:
-        clients = redis_client.get('connected_clients').decode('utf-8')
-        emit('onlineUsers', int(clients)-1, broadcast=True)
-        time.sleep(5)
+    clients = redis_client.get('connected_clients').decode('utf-8')
+    emit('onlineUsers', int(clients)-1, broadcast=True)
 
 
 @socketio.on('mapHashID')
@@ -51,15 +49,6 @@ def mapHashID(Hash):
             redis_client.incr('connected_clients')
         redis_client.set(request.sid, Hash)
         redis_client.set(Hash, request.sid)
-
-        """if redis_client.hexists('NameChange', Hash):
-            name_email = redis_client.hget('NameChange', Hash).decode('utf-8')
-            name_email = name_email.split(' ')
-            name_json = json.dumps(
-                {'hashID': Hash, 'newName': name_email[1],
-                 'email': name_email[0]})
-            emit('nameChange', name_json, room=request.sid)
-            redis_client.hdel('NameChange', Hash)"""
 
         queue_val = hash_func(Hash)
         all_msgs = []
