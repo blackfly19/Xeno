@@ -4,6 +4,7 @@ import pika
 from flask_socketio import emit, disconnect
 from modules import socketio, redis_client
 from modules.global_utils import hash_func
+import time
 
 
 @socketio.on('connect')
@@ -27,8 +28,10 @@ def Disconnect():
 
 @socketio.on('onlineUsers')
 def onlineUsers():
-    clients = redis_client.get('connected_clients').decode('utf-8')
-    emit('onlineUsers', clients, room=request.sid)
+    while 1:
+        clients = redis_client.get('connected_clients').decode('utf-8')
+        emit('onlineUsers', int(clients)-1, broadcast=True)
+        time.sleep(5)
 
 
 @socketio.on('mapHashID')
