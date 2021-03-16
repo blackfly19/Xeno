@@ -129,10 +129,10 @@ def notify():
                     token, "Xeno", "Many people are online. Join them!")
 
 
-@async_task.task()
+"""@async_task.task()
 def onlineUsers(socketio_url):
     socket = SocketIO(message_queue=socketio_url)
     while 1:
         clients = redis_client.get('connected_clients').decode('utf-8')
         socket.emit('onlineUsers', int(clients)-1, broadcast=True)
-        time.sleep(5)
+        time.sleep(5)"""

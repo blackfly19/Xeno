@@ -51,7 +51,8 @@ def newUser(new_data):
 
     redis_client.set(request.sid, data['hashID'])
     redis_client.set(data['hashID'], request.sid)
-    redis_client.incr('connected_clients')
+    clients = redis_client.incr('connected_clients')
+    emit('onlineUsers', clients, broadcast=True)
     pika_client = pika.BlockingConnection(
         pika.URLParameters(current_app.config['MQ_URL']))
     channel = pika_client.channel()
@@ -93,7 +94,8 @@ def deleteUser(delete_json):
     db.session.commit()
 
     if redis_client.exists(request.sid):
-        redis_client.decr('connected_clients')
+        clients = redis_client.decr('connected_clients')
+        emit('onlineUsers', clients, broadcast=True)
         user_hash = redis_client.get(request.sid).decode('utf-8')
         redis_client.delete(request.sid)
         redis_client.delete(user_hash)
