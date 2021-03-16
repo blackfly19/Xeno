@@ -20,7 +20,7 @@ def Disconnect():
     print("Disconnected: ", request.sid)
     if redis_client.exists(request.sid):
         clients = redis_client.decr('connected_clients')
-        emit('onlineUsers', clients, broadcast=True)
+        emit('onlineUsers', clients-1, broadcast=True)
         user_hash = redis_client.get(request.sid).decode('utf-8')
         redis_client.delete(request.sid)
         redis_client.delete(user_hash)
@@ -47,7 +47,7 @@ def mapHashID(Hash):
             disconnect(sid)
         else:
             clients = redis_client.incr('connected_clients')
-            emit('onlineUsers', clients, broadcast=True)
+            emit('onlineUsers', clients-1, broadcast=True)
         redis_client.set(request.sid, Hash)
         redis_client.set(Hash, request.sid)
 

@@ -52,7 +52,7 @@ def newUser(new_data):
     redis_client.set(request.sid, data['hashID'])
     redis_client.set(data['hashID'], request.sid)
     clients = redis_client.incr('connected_clients')
-    emit('onlineUsers', clients, broadcast=True)
+    emit('onlineUsers', clients-1, broadcast=True)
     pika_client = pika.BlockingConnection(
         pika.URLParameters(current_app.config['MQ_URL']))
     channel = pika_client.channel()
