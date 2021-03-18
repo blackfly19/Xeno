@@ -107,23 +107,23 @@ def deleteUser(delete_json):
         data['os'] + '\nApp Version: ' + data['appV']
     mail.send(msg)
 
-    url = "https://res.cloudinary.com/fsduhag8/image/upload/v1615465702/defaultUser_uodzbq.jpg"
-
+    delete_msg = "Your friend {} deleted his account".format(user.username)
+    delete_msg_json = json.dumps(delete_msg)
     for friend in user.friends:
-        friend_nameChange_msg = {'type': 'friendNameChange',
-                                 "userHashID": user.hashID,
-                                 "friendHashID": friend.friend_hashID,
-                                 "content": 'DeletedUser'}
-        friend_dpChange_msg = {'type': 'friendDpChange',
-                               "userHashID": user.hashID,
-                               "friendHashID": friend.friend_hashID,
-                               "content": url}
-        friend_dpChange_msg_json = json.dumps(friend_dpChange_msg)
-        friend_nameChange_msg_json = json.dumps(friend_nameChange_msg)
-        messageHandler(message_json=friend_nameChange_msg_json,
-                       message=friend_nameChange_msg)
-        messageHandler(message_json=friend_dpChange_msg_json,
-                       message=friend_dpChange_msg)
+        friend_delete_msg = {'type': 'deleteFriend',
+                             "userHashID": user.hashID,
+                             "friendHashID": friend.friend_hashID,
+                            }
+        friend_msg = {'type': 'message',
+                      "userHashID": "42424242424242424242424242424242",
+                      "friendHashID": friend.friend_hashID,
+                      "content": delete_msg_json}
+        friend_delete_msg_json = json.dumps(friend_delete_msg)
+        friend_msg_json = json.dumps(friend_msg)
+        messageHandler(message_json=friend_delete_msg_json,
+                       message=friend_delete_msg)
+        messageHandler(message_json=friend_msg_json,
+                       message=friend_msg)
 
 
 @socketio.on('validatePhone')
