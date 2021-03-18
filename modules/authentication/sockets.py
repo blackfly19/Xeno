@@ -107,8 +107,7 @@ def deleteUser(delete_json):
         data['os'] + '\nApp Version: ' + data['appV']
     mail.send(msg)
 
-    delete_msg = "Your friend {} deleted his account".format(user.username)
-    delete_msg_json = json.dumps(delete_msg)
+    delete_msg = "Your friend {} has deleted their account".format(user.username)
     for friend in user.friends:
         friend_delete_msg = {'type': 'deleteFriend',
                              "userHashID": user.hashID,
@@ -117,7 +116,7 @@ def deleteUser(delete_json):
         friend_msg = {'type': 'message',
                       "userHashID": "42424242424242424242424242424242",
                       "friendHashID": friend.friend_hashID,
-                      "content": delete_msg_json}
+                      "content": delete_msg}
         friend_delete_msg_json = json.dumps(friend_delete_msg)
         friend_msg_json = json.dumps(friend_msg)
         messageHandler(message_json=friend_delete_msg_json,
