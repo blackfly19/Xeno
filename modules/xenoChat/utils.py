@@ -125,14 +125,8 @@ def notify():
                 token = redis_client.lpop('notifyMe')
                 token = token.decode('utf-8')
                 print(token)
-                notifications(
-                    token, "Xeno", "Many people are online. Join them!")
-
-
-"""@async_task.task()
-def onlineUsers(socketio_url):
-    socket = SocketIO(message_queue=socketio_url)
-    while 1:
-        clients = redis_client.get('connected_clients').decode('utf-8')
-        socket.emit('onlineUsers', int(clients)-1, broadcast=True)
-        time.sleep(5)"""
+                try:
+                    notifications(
+                        token, "Xeno", "Many people are online. Join them!")
+                except Exception:
+                    continue
