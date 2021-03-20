@@ -100,10 +100,15 @@ def SeemaTaparia(socketio_url):
             user2_json = json.dumps({'name': user2.username, 'hashID': hash_user2, 'imageUrl': user2.imageUrl,
                                      'interests': [user2.interest_1, user2.interest_2, user2.interest_3, user2.interest_4, user2.interest_5]})
 
+            reqSid1 = redis_client.get(hash_user1).decode('urf-8')
+            reqSid2 = redis_client.get(hash_user2).decode('utf-8')
             socket.emit('xenoHashID', user1_json,
-                        room=redis_client.get(hash_user2).decode('utf-8'))
+                        room=reqSid2)
             socket.emit('xenoHashID', user2_json,
-                        room=redis_client.get(hash_user1).decode('utf-8'))
+                        room=reqSid1)
+
+            redis_client.hset('sessions', reqSid1, reqSid2)
+            redis_client.hset('sessions', reqSid2, reqSid1)
 
 
 @async_task.task()

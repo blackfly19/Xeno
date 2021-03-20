@@ -22,6 +22,11 @@ def Disconnect():
         clients = redis_client.decr('connected_clients')
         emit('onlineUsers', clients-1, broadcast=True)
         user_hash = redis_client.get(request.sid).decode('utf-8')
+        if redis_client.hexists('sessions', request.sid):
+            sid = redis_client.hget('sessions', request.sid)
+            emit('xenoLeft', user_hash, room=sid)
+            redis_client.hdel('sessions', request.sid)
+            redis_client.hdel('sessions', sid)
         redis_client.delete(request.sid)
         redis_client.delete(user_hash)
 

@@ -30,7 +30,8 @@ def create_app(config_class):
     ma.init_app(app)
     socketio.init_app(app, cors_allowed_origins="*",
                       message_queue=app.config['SOCKETIO_URL'],
-                      async_mode='eventlet')
+                      async_mode='eventlet',
+                      always_connect=True)
     redis_client.init_app(app)
     migrate.init_app(app, db)
 

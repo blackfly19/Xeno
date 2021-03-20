@@ -81,6 +81,9 @@ def final(data):
         emit('revealFinal', False, room=user_receiver)
         emit('revealFinal', False, room=friend_receiver)
 
+    redis_client.hdel('sessions', user_receiver)
+    redis_client.hdel('sessions', friend_receiver)
+
 
 @socketio.on('xenoLeft')
 def xenoLeft(friendHashID):
