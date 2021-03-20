@@ -24,6 +24,7 @@ def Disconnect():
         user_hash = redis_client.get(request.sid).decode('utf-8')
         if redis_client.hexists('sessions', request.sid):
             sid = redis_client.hget('sessions', request.sid)
+            sid = sid.decode('utf-8')
             emit('xenoLeft', user_hash, room=sid)
             redis_client.hdel('sessions', request.sid)
             redis_client.hdel('sessions', sid)
