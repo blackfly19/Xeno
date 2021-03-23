@@ -92,6 +92,11 @@ def xenoLeft(friendHashID):
     if receiver is not None:
         receiver = receiver.decode('utf-8')
         emit('xenoLeft', sender, room=receiver)
+        if redis_client.hexists('sessions', receiver):
+            sid = redis_client.hget('sessions', receiver)
+            sid = sid.decode('utf-8')
+            redis_client.hdel('sessions', receiver)
+            redis_client.hdel('sessions', sid)
 
 
 @socketio.on('notifyMe')
