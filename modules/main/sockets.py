@@ -17,6 +17,7 @@ def Connect():
 
 @socketio.on('disconnect')
 def Disconnect():
+    disconnect(request.sid)
     print("Disconnected: ", request.sid)
     if redis_client.exists(request.sid):
         clients = redis_client.decr('connected_clients')
