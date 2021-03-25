@@ -144,10 +144,10 @@ def notifications(token, title, message, extra=None):
 def transactionFail(original_function):
     def wrapperFunction(*args, **kwargs):
         try:
-            if original_function.__name__ == 'newUser':
-                emit('authSuccess', False, room=request.sid)
             return original_function(*args, **kwargs)
         except exc.SQLAlchemyError as e:
             print(e)
+            if original_function.__name__ == 'newUser':
+                emit('authSuccess', False, room=request.sid)
             db.session.rollback()
     return wrapperFunction
