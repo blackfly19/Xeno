@@ -42,6 +42,8 @@ def newUser(new_data):
     db.session.add(new_user)
     db.session.commit()
 
+    emit('authSucess', True, room=request.sid)
+
     msg = {'id': int(time.time() * 1000), 'type': 'message',
            "userHashID": "42424242424242424242424242424242",
            "friendHashID": data['hashID'], "content": welcome_msg_1}

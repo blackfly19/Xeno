@@ -1,5 +1,5 @@
 import json
-from flask import current_app
+from flask import current_app, request
 from flask_socketio import emit
 from sqlalchemy import exc
 from modules import redis_client, db
@@ -15,7 +15,6 @@ import rollbar
 import base64
 import cloudinary
 import cloudinary.uploader as Uploader
-from PIL import Image
 
 
 def hash_func(s):
@@ -145,6 +144,8 @@ def notifications(token, title, message, extra=None):
 def transactionFail(original_function):
     def wrapperFunction(*args, **kwargs):
         try:
+            if original_function.__name__ == 'newUser':
+                emit('authSuccess', False, room=request.sid)
             return original_function(*args, **kwargs)
         except exc.SQLAlchemyError as e:
             print(e)
