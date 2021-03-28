@@ -30,7 +30,7 @@ def notifBroadcast(title, message):
 
 @socketio.on('dashNotif')
 def notif(email, title, message):
-    user = User.query.filter_by(email=email)
+    user = User.query.filter_by(email=email).first()
     try:
         print(user.notif_token)
         notifications(user.notif_token, title, message)
