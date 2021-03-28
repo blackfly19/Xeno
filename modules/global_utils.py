@@ -54,7 +54,6 @@ def messageHandler(message_json, message=None):
                 user = User.query.filter_by(hashID=msg['userHashID']).first()
                 friend = User.query.filter_by(hashID=msg['friendHashID']).first()
                 token_id = friend.notif_token
-                print(token_id)
                 try:
                     notifications(token_id, user.username, msg['content'])
                 except Exception:

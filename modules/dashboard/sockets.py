@@ -1,5 +1,5 @@
 from modules import socketio, db
-from modules.global_utils import messageHandler, transactionFail
+from modules.global_utils import messageHandler, transactionFail, notifications
 from modules.models import User
 import json
 import time
@@ -17,9 +17,25 @@ def broadcast(message):
             messageHandler(message_json=json_msg, message=msg)
 
 
+@socketio.on('dashNotifBroadcast')
+def notifBroadcast(title, message):
+    users = User.query.all()
+    for user in users:
+        try:
+            print(user.notif_token)
+            notifications(user.notif_token, title, message)
+        except Exception:
+            pass
+
+
 @socketio.on('dashSendMessage')
-def sendMessage(message):
-    messageHandler(message_json=message)
+def sendMessage(email, message):
+    user = User.query.filter_by(email=email).first()
+    msg = {'id': int(time.time() * 1000), 'type': 'message',
+           "userHashID": "42424242424242424242424242424242",
+           "friendHashID": user.hashID, "content": message}
+    message_json = json.dumps(msg)
+    messageHandler(message_json=message_json)
 
 
 @socketio.on('dashNameChangeAccepted')
