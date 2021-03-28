@@ -28,6 +28,16 @@ def notifBroadcast(title, message):
             pass
 
 
+@socketio.on('dashNotif')
+def notif(email, title, message):
+    user = User.query.filter_by(email=email)
+    try:
+        print(user.notif_token)
+        notifications(user.notif_token, title, message)
+    except Exception:
+        pass
+
+
 @socketio.on('dashSendMessage')
 def sendMessage(email, message):
     user = User.query.filter_by(email=email).first()
