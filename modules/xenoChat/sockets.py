@@ -102,4 +102,5 @@ def xenoLeft(friendHashID):
 @socketio.on('notifyMe')
 def notifyMe(hashID):
 
-    redis_client.rpush('notifyMe', hashID)
+    #    redis_client.rpush('notifyMe', hashID)
+    redis_client.sadd('notifyMe', hashID)

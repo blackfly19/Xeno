@@ -32,6 +32,7 @@ def Wait(socketio_url):
 
     if redis_client.ttl('matchqueue') == -2:
         redis_client.decr('match_queue_count')
+        redis_client.sadd('personalNotif', Hash)
         print(Hash)
         try:
             receiver = redis_client.get(Hash).decode('utf-8')
@@ -125,9 +126,9 @@ def keep_server_alive():
 def notify():
     while 1:
         if int(redis_client.get('connected_clients').decode('utf-8')) > 5:
-            length = redis_client.llen('notifyMe')
+            length = redis_client.scard('notifyMe')
             for i in range(length):
-                token = redis_client.lpop('notifyMe')
+                token = redis_client.spop('notifyMe')
                 token = token.decode('utf-8')
                 print(token)
                 try:
