@@ -17,19 +17,20 @@ def Connect():
 
 @socketio.on('disconnect')
 def Disconnect():
-    disconnect(request.sid)
-    print("Disconnected: ", request.sid)
-    if redis_client.exists(request.sid):
+    mainSid = request.sid
+    disconnect(mainSid)
+    print("Disconnected: ", mainSid)
+    if redis_client.exists(mainSid):
         clients = redis_client.decr('connected_clients')
         emit('onlineUsers', clients-1, broadcast=True)
-        user_hash = redis_client.get(request.sid).decode('utf-8')
-        if redis_client.hexists('sessions', request.sid):
-            sid = redis_client.hget('sessions', request.sid)
+        user_hash = redis_client.get(mainSid).decode('utf-8')
+        if redis_client.hexists('sessions', mainSid):
+            sid = redis_client.hget('sessions', mainSid)
             sid = sid.decode('utf-8')
             emit('xenoLeft', user_hash, room=sid)
-            redis_client.hdel('sessions', request.sid)
+            redis_client.hdel('sessions', mainSid)
             redis_client.hdel('sessions', sid)
-        redis_client.delete(request.sid)
+        redis_client.delete(mainSid)
         redis_client.delete(user_hash)
 
 
