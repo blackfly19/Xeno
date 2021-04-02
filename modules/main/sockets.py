@@ -45,10 +45,6 @@ def mapHashID(Hash):
 
     print("Hash: ", Hash)
     if Hash is not None:
-        pika_client = pika.BlockingConnection(
-            pika.URLParameters(current_app.config['MQ_URL']))
-        channel = pika_client.channel()
-
         if redis_client.exists(Hash):
             sid = redis_client.get(Hash).decode('utf-8')
             redis_client.delete(sid)
@@ -59,8 +55,12 @@ def mapHashID(Hash):
         redis_client.set(request.sid, Hash)
         redis_client.set(Hash, request.sid)
 
+        pika_client = pika.BlockingConnection(
+            pika.URLParameters(current_app.config['MQ_URL']))
+        channel = pika_client.channel()
+
         queue_val = hash_func(Hash)
-        all_msgs = []
+        #all_msgs = []
         val = channel.queue_declare(queue=str(queue_val), passive=True)
         num_msgs = val.method.message_count
         if num_msgs != 0:
@@ -68,17 +68,14 @@ def mapHashID(Hash):
                 body = body.decode('utf-8')
                 user_msg = json.loads(body)
                 if user_msg['friendHashID'] == Hash:
-                    if user_msg['type'] != 'message':
-                        emit(user_msg['type'], body, room=request.sid)
-                    else:
-                        all_msgs.append(user_msg)
+                    emit(user_msg['type'], body, room=request.sid)
                     channel.basic_ack(method_frame.delivery_tag)
                 num_msgs = num_msgs - 1
 
                 if num_msgs == 0:
                     break
 
-            if len(all_msgs) != 0:
+            """if len(all_msgs) != 0:
                 all_msgs = json.dumps(all_msgs)
-                emit('unread', all_msgs, room=request.sid)
+                emit('unread', all_msgs, room=request.sid)"""
         channel.close()
